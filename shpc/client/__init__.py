@@ -126,6 +126,40 @@ def get_parser():
         action="store_true",
     )
 
+    #Reinstall an installed recipe
+    reinstall = subparsers.add_parser(
+                "reinstall",
+                description=help.reinstall_description,
+                formatter_class=argparse.RawTextHelpFormatter,
+    )
+    reinstall.add_argument("reinstall_recipe", help="recipe to reinstall")
+
+    reinstall.add_argument(
+                "--container-image",
+                help="path to a container image file",
+                nargs="?",
+    )
+    reinstall.add_argument(
+                "--keep-path",
+                help="if installing a local container, do not copy the container - use the provided path.",
+                default=False,
+                action="store_true",
+    )
+    reinstall.add_argument(
+                "--no-view",
+                dest="no_view",
+                help="skip installing to the default view, if defined in settings.",
+                action="store_true",
+    )
+    reinstall.add_argument(
+                "--force",
+                "-f",
+                dest="force",
+                help="force reinstall by removing the current installation before reinstalling",
+                default=False,
+                action="store_true",
+    )
+
     # List installed modules
     listing = subparsers.add_parser(
         "list",
@@ -535,6 +569,8 @@ def run_shpc():
         from .pull import main
     elif args.command == "remove":
         from .remove import main
+    elif args.command == "reinstall":
+        from .reinstall import main
     elif args.command == "shell":
         from .shell import main
     elif args.command == "show":
