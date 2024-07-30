@@ -431,6 +431,7 @@ def get_parser():
         install,
         listing,
         remove,
+        reinstall,
         shell,
         test,
         uninstall,
