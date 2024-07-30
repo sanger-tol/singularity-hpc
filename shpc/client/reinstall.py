@@ -35,12 +35,12 @@ def main(args, parser, extra, subparser):
         container_image=args.container_image,
         keep_path=args.keep_path,
     )
-        if cli.settings.default_view and not args.no_view:
-            cli.view_install(
-            cli.settings.default_view,
-            args.reinstall_recipe,
-            force=args.force,
-            container_image=args.container_image,
+    if cli.settings.default_view and not args.no_view:
+        cli.view_install(
+        cli.settings.default_view,
+        args.reinstall_recipe,
+        force=args.force,
+        container_image=args.container_image,
     )
             '''
     else:
