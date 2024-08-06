@@ -61,9 +61,26 @@ def main(args, parser, extra, subparser):
 
     # Compare the latest version with the user's insalled version
     if latest_version_tag == current_version_tag:
-        print("You have the latest version of " + name + "installed already" )
+        print("You have the latest version of " + name + " installed already" )
     else:
-        print("Your version of " + name + " is outdated. Performing an upgrade")
+        print("Your version of " + name + " is outdated. Performing an upgrade...")
+        # Proceed with uninstallation
+        cli.uninstall(name, force=args.force)
+
+        # Install the latest version
+        cli.install(
+            name,
+            force=args.force,
+            container_image=args.container_image,
+            keep_path=args.keep_path,
+        )
+        if cli.settings.default_view and not args.no_view:
+            cli.view_install(
+            cli.settings.default_view,
+            name,
+            force=args.force,
+            container_image=args.container_image,
+        )
 
     
     

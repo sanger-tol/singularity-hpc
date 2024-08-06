@@ -100,7 +100,7 @@ class ModuleBase(BaseClient):
 
         # Ask before deleting anything!
         if not force:
-            msg = name + "?"
+            msg = "Do you wish to uninstall " + name + "?"
             if views_with_module:
                 msg += (
                     "\nThis will uninstall the module from views:\n  %s\nAre you sure?"
