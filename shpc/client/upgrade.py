@@ -37,5 +37,5 @@ def main(args, parser, extra, subparser):
 
     # Extract the currently installed version
     current_version_info = cli.list(pattern=name, names_only=False, short=False)
-    current_version = list(current_version_info.keys())[1]
-    print(f"Your current version is: {current_version}")
+    #current_version = list(current_version_info.keys())[1]
+    print(f"Your current version is: {current_version_info}")
