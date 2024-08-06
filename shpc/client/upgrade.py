@@ -6,7 +6,9 @@ import shpc.utils
 from shpc.logger import logger
 
 def main(args, parser, extra, subparser):
+    import io
     from shpc.main import get_client
+    from contextlib import redirect_stdout
 
     shpc.utils.ensure_no_extra(extra)
 
@@ -23,7 +25,7 @@ def main(args, parser, extra, subparser):
     # Add namespace 
     name = cli.add_namespace(args.upgrade_recipe)
 
-    # Load the container configuration for the specified software
+    # Load the container configuration for the specified recipe
     config = cli._load_container(name)
 
     # Retrieve the latest version
@@ -36,6 +38,22 @@ def main(args, parser, extra, subparser):
     print(f"Latest version is: {latest_version}")
 
     # Extract the currently installed version
+    current_version_info = capture_stdout(cli.list, pattern=name, names_only=False, short=False)
+    print(f"Your current version is: {current_version_info}")
+
+    '''
+    # Extract the currently installed version
     current_version_info = cli.list(pattern=name, names_only=False, short=False)
     #current_version = list(current_version_info.keys())[1]
     print(f"Your current version is: {current_version_info}")
+    '''
+
+    # Function to capture stdout of cli.list()
+    def capture_stdout(func, *args, **kwargs):
+        string_buffer = io.StringIO()
+        with redirect_stdout(string_buffer):
+            func(*args, **kwargs)
+        return string_buffer.getvalue()
+
+    
+
