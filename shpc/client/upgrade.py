@@ -36,8 +36,8 @@ def main(args, parser, extra, subparser):
 
     # Retrieve and extract the currently installed version from the user's list of installed modules
     current_version_info = get_current_version(name)
-    current_version_tag = get_tag(current_version_info)
-    print(f"Your current version is: {current_version_tag}")
+    #current_version_tag = get_tag(current_version_info)
+    print(f"Your current version is: {current_version_info}")
 
     def get_current_version(recipe):
         try:
@@ -52,13 +52,13 @@ def main(args, parser, extra, subparser):
         except subprocess.CalledProcessError as e:
             print(f"Failed to execute shpc list command: {e}")
             return None
-        
+    '''   
     def get_tag(output):
         parts = output.strip().split(':', 1)
         if len(parts) == 2:
             return parts[1].strip()
         return None
-
+    '''
     
 
 
