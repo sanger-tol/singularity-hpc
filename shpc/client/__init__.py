@@ -327,9 +327,32 @@ def get_parser():
     # Upgrade a module to its latest version
     upgrade = subparsers.add_parser(
         "upgrade",
-        formatter_class=argparse.RawTextHelpFormatter,
         description=help.upgrade_description,
+        formatter_class=argparse.RawTextHelpFormatter,
     )
+    upgrade.add_argument(
+        "upgrade_recipe", help="module to upgrade (module/version)")
+    
+    upgrade.add_argument(
+        "container_image",
+        help="path to an existing container image for this software",
+        nargs="?",
+    )
+
+    upgrade.add_argument(
+        "--keep-path",
+        help="if installing a local container, do not copy the container - use the provided path.",
+        default=False,
+        action="store_true",
+    )
+
+    upgrade.add_argument(
+        "--no-view",
+        dest="no_view",
+        help="skip installing to the default view, if defined in settings.",
+        action="store_true",
+    )
+
     upgrade.add_argument(
         "--force",
         "-f",
@@ -337,9 +360,6 @@ def get_parser():
         help="force upgrade even if versions match",
         default=False,
         action="store_true",
-    )
-    upgrade.add_argument(
-        "upgrade_recipe", help="module to upgrade (module/version)", nargs="?"
     )
 
     # Update gets latest tags from OCI registries
