@@ -7,10 +7,6 @@ from shpc.logger import logger
 
 def main(args, parser, extra, subparser):
     import subprocess
-    '''
-    import io
-    import sys
-    '''
     from shpc.main import get_client
 
     shpc.utils.ensure_no_extra(extra)
@@ -31,20 +27,22 @@ def main(args, parser, extra, subparser):
     # Load the container configuration for the specified recipe
     config = cli._load_container(name)
 
-    # Retrieve the latest version
+    # Retrieve and extract the latest version from the container configuration
     latest_version_info = config.get('latest')
     if not latest_version_info:
         logger.exit(f"No latest version found for {name}")
+    latest_version_tag = list(latest_version_info.keys())[0]
+    print(f"Latest version is: {latest_version_tag}")
 
-    # Extract the latest version
-    latest_version = list(latest_version_info.keys())[0]
-    print(f"Latest version is: {latest_version}")
+    # Retrieve and extract the currently installed version from the user's list of installed modules
+    current_version_info = get_current_version(name)
+    current_version_tag = get_tag(current_version_info)
+    print(f"Your current version is: {current_version_tag}")
 
-
-    def get_current_version(name):
+    def get_current_version(recipe):
         try:
             result = subprocess.run(
-                ['shpc', 'list', name],
+                ['shpc', 'list', recipe],
                 capture_output=True,
                 text=True,
                 check=True
@@ -54,41 +52,15 @@ def main(args, parser, extra, subparser):
         except subprocess.CalledProcessError as e:
             print(f"Failed to execute shpc list command: {e}")
             return None
-
-    # Extract the currently installed version
-    current_version_info = get_current_version(name)
-    print(f"Your current version is: {current_version_info}")
-
-
-    '''
-    # Extract the currently installed version
-    current_version_info = capture_stdout(cli.list, pattern=name, names_only=False, short=False)
-    print(f"Your current version is: {current_version_info}")
+        
+    def get_tag(output):
+        parts = output.strip().split(':', 1)
+        if len(parts) == 2:
+            return parts[1].strip()
+        return None
 
     
-    # Extract the currently installed version
-    current_version_info = cli.list(pattern=name, names_only=False, short=False)
-    #current_version = list(current_version_info.keys())[1]
-    print(f"Your current version is: {current_version_info}")
+
+
     
-
-    # Function to capture stdout of cli.list()
-    def capture_stdout(func, *args, **kwargs):
-        # Save the current sys.stdout, create a string buffer and redirect sys.stdout to the string buffer
-        original_stdout = sys.stdout
-        string_buffer = io.StringIO()
-        sys.stdout = string_buffer
-        
-        try:
-            # Call the function and get the content of the string buffer
-            func(*args, **kwargs)
-            output = string_buffer.getvalue()
-        finally:
-            # Restore sys.stdout to its original state
-            sys.stdout = original_stdout
-        
-        return output
-    '''
-
-
 
