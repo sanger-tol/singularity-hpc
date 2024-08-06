@@ -6,8 +6,11 @@ import shpc.utils
 from shpc.logger import logger
 
 def main(args, parser, extra, subparser):
+    import subprocess
+    '''
     import io
     import sys
+    '''
     from shpc.main import get_client
 
     shpc.utils.ensure_no_extra(extra)
@@ -37,16 +40,37 @@ def main(args, parser, extra, subparser):
     latest_version = list(latest_version_info.keys())[0]
     print(f"Latest version is: {latest_version}")
 
+
+    def get_current_version(name):
+        try:
+            result = subprocess.run(
+                ['shpc', 'list', name],
+                capture_output=True,
+                text=True,
+                check=True
+            )
+            output = result.stdout
+            return output
+        except subprocess.CalledProcessError as e:
+            print(f"Failed to execute shpc list command: {e}")
+            return None
+
+    # Extract the currently installed version
+    current_version_info = get_current_version(name)
+    print(f"Your current version is: {current_version_info}")
+
+
+    '''
     # Extract the currently installed version
     current_version_info = capture_stdout(cli.list, pattern=name, names_only=False, short=False)
     print(f"Your current version is: {current_version_info}")
 
-    '''
+    
     # Extract the currently installed version
     current_version_info = cli.list(pattern=name, names_only=False, short=False)
     #current_version = list(current_version_info.keys())[1]
     print(f"Your current version is: {current_version_info}")
-    '''
+    
 
     # Function to capture stdout of cli.list()
     def capture_stdout(func, *args, **kwargs):
@@ -64,7 +88,7 @@ def main(args, parser, extra, subparser):
             sys.stdout = original_stdout
         
         return output
-
+    '''
 
 
 
