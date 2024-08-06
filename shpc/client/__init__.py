@@ -324,6 +324,24 @@ def get_parser():
         action="store_true",
     )
 
+    # Upgrade a module to its latest version
+    upgrade = subparsers.add_parser(
+        "upgrade",
+        formatter_class=argparse.RawTextHelpFormatter,
+        description=help.upgrade_description,
+    )
+    upgrade.add_argument(
+        "--force",
+        "-f",
+        dest="force",
+        help="force upgrade even if versions match",
+        default=False,
+        action="store_true",
+    )
+    upgrade.add_argument(
+        "upgrade_recipe", help="module to upgrade (module/version)", nargs="?"
+    )
+
     # Update gets latest tags from OCI registries
     update = subparsers.add_parser(
         "update",
@@ -400,6 +418,7 @@ def get_parser():
         shell,
         test,
         uninstall,
+        upgrade,
         view,
     ]:
         command.add_argument(
@@ -546,6 +565,8 @@ def run_shpc():
     elif args.command == "uninstall":
         from .uninstall import main
     elif args.command == "update":
+        from .update import main
+    elif args.command == "upgrade":
         from .update import main
     elif args.command == "sync-registry":
         from .sync import sync_registry as main

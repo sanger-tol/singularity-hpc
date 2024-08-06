@@ -242,3 +242,10 @@ show_description = """Show the config for a registry entry
   # Filter all modules to those with "python"
   $ shpc show --filter python
 """
+
+upgrade_description = """Upgrade a module to the latest version.
+
+  # Upgrade the specified software to the latest version
+  $ shpc upgrade quay.io/biocontainers/samtools
+
+"""
