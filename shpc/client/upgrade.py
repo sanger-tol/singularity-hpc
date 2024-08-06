@@ -34,11 +34,11 @@ def main(args, parser, extra, subparser):
     latest_version_tag = list(latest_version_info.keys())[0]
     print(f"Latest version is: {latest_version_tag}")
 
-    # Retrieve and extract the currently installed version from the user's list of installed modules
-    def get_current_version(name):
+    # Retrieve the currently installed version from the user's list of installed modules
+    def get_current_version(recipe):
         try:
             result = subprocess.run(
-                ['shpc', 'list', name],
+                ['shpc', 'list', recipe],
                 capture_output=True,
                 text=True,
                 check=True
@@ -48,18 +48,19 @@ def main(args, parser, extra, subparser):
         except subprocess.CalledProcessError as e:
             print(f"Failed to execute shpc list command: {e}")
             return None
-
-    # Extract the currently installed version
-    current_version_info = get_current_version(name)
-    print(f"Your current version is: {current_version_info}")
-    
-    '''   
+        
     def get_tag(output):
         parts = output.strip().split(':', 1)
         if len(parts) == 2:
             return parts[1].strip()
         return None
-    '''
+
+    # Extract its tag
+    current_version_info = get_current_version(name)
+    current_version_tag = get_tag(current_version_info)
+    print(f"Your current version is: {current_version_tag}")
+
+    
     
 
 
