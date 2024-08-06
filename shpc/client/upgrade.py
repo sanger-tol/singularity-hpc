@@ -7,8 +7,8 @@ from shpc.logger import logger
 
 def main(args, parser, extra, subparser):
     import io
+    import sys
     from shpc.main import get_client
-    from contextlib import redirect_stdout
 
     shpc.utils.ensure_no_extra(extra)
 
@@ -50,10 +50,21 @@ def main(args, parser, extra, subparser):
 
     # Function to capture stdout of cli.list()
     def capture_stdout(func, *args, **kwargs):
+        # Save the current sys.stdout, create a string buffer and redirect sys.stdout to the string buffer
+        original_stdout = sys.stdout
         string_buffer = io.StringIO()
-        with redirect_stdout(string_buffer):
+        sys.stdout = string_buffer
+        
+        try:
+            # Call the function and get the content of the string buffer
             func(*args, **kwargs)
-        return string_buffer.getvalue()
+            output = string_buffer.getvalue()
+        finally:
+            # Restore sys.stdout to its original state
+            sys.stdout = original_stdout
+        
+        return output
 
-    
+
+
 
