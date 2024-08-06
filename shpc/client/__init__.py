@@ -354,10 +354,6 @@ def get_parser():
     )
 
     upgrade.add_argument(
-        "name", help="the name of the container config to show", nargs="?"
-    )
-
-    upgrade.add_argument(
         "--force",
         "-f",
         dest="force",

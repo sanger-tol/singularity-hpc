@@ -21,7 +21,7 @@ def main(args, parser, extra, subparser):
         cli.reload_registry()
 
     # Add namespace 
-    name = cli.add_namespace(args.name)
+    name = cli.add_namespace(args.upgrade_recipe)
 
     # Load the container configuration for the specified software
     config = cli._load_container(name)
