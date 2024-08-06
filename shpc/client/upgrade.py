@@ -32,9 +32,9 @@ def main(args, parser, extra, subparser):
     if not latest_version_info:
         logger.exit(f"No latest version found for {name}")
     latest_version_tag = list(latest_version_info.keys())[0]
-    print(f"Latest version is: {latest_version_tag}")
+    #print(f"Latest version is: {latest_version_tag}")
 
-    # Retrieve the currently installed version from the user's list of installed modules
+    # Retrieve and extract the currently installed version from the user's list of installed modules
     def get_current_version(recipe):
         try:
             result = subprocess.run(
@@ -55,10 +55,15 @@ def main(args, parser, extra, subparser):
             return parts[1].strip()
         return None
 
-    # Extract its tag
     current_version_info = get_current_version(name)
     current_version_tag = get_tag(current_version_info)
-    print(f"Your current version is: {current_version_tag}")
+    #print(f"Your current version is: {current_version_tag}")
+
+    # Compare the latest version with the user's insalled version
+    if latest_version_tag == current_version_tag:
+        print("You have the latest version of " + name + "installed already" )
+    else:
+        print("Your version of " + name + " is outdated. Performing an upgrade")
 
     
     
