@@ -354,6 +354,10 @@ def get_parser():
     )
 
     upgrade.add_argument(
+        "name", help="the name of the container config to show", nargs="?"
+    )
+
+    upgrade.add_argument(
         "--force",
         "-f",
         dest="force",
@@ -493,7 +497,7 @@ def get_parser():
         type=int,
     )
 
-    for command in docgen, show, add, remove, sync:
+    for command in docgen, show, add, remove, upgrade, sync:
         command.add_argument(
             "--registry", help="GitHub repository or local path where registry lives."
         )
