@@ -35,10 +35,6 @@ def main(args, parser, extra, subparser):
     print(f"Latest version is: {latest_version_tag}")
 
     # Retrieve and extract the currently installed version from the user's list of installed modules
-    current_version_info = get_current_version(name)
-    #current_version_tag = get_tag(current_version_info)
-    print(f"Your current version is: {current_version_info}")
-
     def get_current_version(name):
         try:
             result = subprocess.run(
@@ -52,6 +48,11 @@ def main(args, parser, extra, subparser):
         except subprocess.CalledProcessError as e:
             print(f"Failed to execute shpc list command: {e}")
             return None
+
+    # Extract the currently installed version
+    current_version_info = get_current_version(name)
+    print(f"Your current version is: {current_version_info}")
+    
     '''   
     def get_tag(output):
         parts = output.strip().split(':', 1)
