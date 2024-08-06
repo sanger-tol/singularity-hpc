@@ -39,10 +39,10 @@ def main(args, parser, extra, subparser):
     #current_version_tag = get_tag(current_version_info)
     print(f"Your current version is: {current_version_info}")
 
-    def get_current_version(recipe):
+    def get_current_version(name):
         try:
             result = subprocess.run(
-                ['shpc', 'list', recipe],
+                ['shpc', 'list', name],
                 capture_output=True,
                 text=True,
                 check=True
