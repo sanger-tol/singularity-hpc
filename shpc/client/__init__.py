@@ -567,7 +567,7 @@ def run_shpc():
     elif args.command == "update":
         from .update import main
     elif args.command == "upgrade":
-        from .update import main
+        from .upgrade import main
     elif args.command == "sync-registry":
         from .sync import sync_registry as main
 
