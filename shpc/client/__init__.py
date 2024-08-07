@@ -357,7 +357,7 @@ def get_parser():
         "--force",
         "-f",
         dest="force",
-        help="force upgrade even if versions match",
+        help="force upgrade without prompting for confirmation to uninstall current version",
         default=False,
         action="store_true",
     )

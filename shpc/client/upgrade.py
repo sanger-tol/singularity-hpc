@@ -63,25 +63,25 @@ def main(args, parser, extra, subparser):
     if latest_version_tag == current_version_tag:
         print("You have the latest version of " + name + " installed already" )
     else:
-        print("Latest version available!")
-        print("Upgrading " + name + " to version " + latest_version_tag)
+        print("Upgrading " + name + " to its latest version. Version " + latest_version_tag)
         # Proceed with uninstallation
-        cli.uninstall(name, force=args.force)
-
-        # Install the latest version
-        cli.install(
-            name,
-            force=args.force,
-            container_image=args.container_image,
-            keep_path=args.keep_path,
-        )
-        if cli.settings.default_view and not args.no_view:
-            cli.view_install(
-            cli.settings.default_view,
-            name,
-            force=args.force,
-            container_image=args.container_image,
-        )
+        if cli.uninstall(name, force=args.force) is None:
+            print("You must uninstall the current version of " + name + " before you can upgrade it")
+        else:
+            # Install the latest version
+            cli.install(
+                name,
+                force=args.force,
+                container_image=args.container_image,
+                keep_path=args.keep_path,
+            )
+            if cli.settings.default_view and not args.no_view:
+                cli.view_install(
+                cli.settings.default_view,
+                name,
+                force=args.force,
+                container_image=args.container_image,
+            )
 
     
     
