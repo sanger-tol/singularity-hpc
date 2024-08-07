@@ -59,13 +59,13 @@ def main(args, parser, extra, subparser):
     current_version_tag = get_tag(current_version_info)
     #print(f"Your current version is: {current_version_tag}")
 
-    # Compare the latest version with the user's insalled version
+    # Compare the latest version with the user's installed version
     if latest_version_tag == current_version_tag:
         print("You have the latest version of " + name + " installed already" )
     else:
         print("Upgrading " + name + " to its latest version. Version " + latest_version_tag)
         # Proceed with uninstallation
-        if cli.uninstall(name, force=args.force) is None:
+        if not cli.uninstall(name, force=args.force):
             print("You must uninstall the current version of " + name + " before you can upgrade it")
         else:
             # Install the latest version
