@@ -75,9 +75,9 @@ def upgrade(name, cli, args, preview=False):
         latest_version_tag = list(latest_version_info.keys())[0]
         return latest_version_tag
 
-    def get_current_version(recipe):
+    def get_installed_versions(recipe):
         '''
-        Retrieve the current version from the user's list of installed modules
+        Retrieve the installed versions of the recipe from the user's module list
         '''
         try:
             result = subprocess.run(
@@ -91,26 +91,16 @@ def upgrade(name, cli, args, preview=False):
         except subprocess.CalledProcessError as e:
             print(f"Failed to execute shpc list command: {e}")
             return None
-        
-    def get_tag(output):
-        '''
-        Retrieve the current version tag from the current version
-        '''
-        parts = output.strip().split(':', 1)
-        if len(parts) == 2:
-            return parts[1].strip()
-        return None
     
     # Load the container configuration for the specified recipe
     config = cli._load_container(name)
 
-    #Store the latest version and current version tags
-    current_version_info = get_current_version(name)
+    #Store the installed versions and the latest version tag
+    installed_versions = get_installed_versions(name)
     latest_version_tag = get_latest_version(config)
-    current_version_tag = get_tag(current_version_info)
 
     # Compare the latest version with the user's installed version
-    if latest_version_tag == current_version_tag:
+    if latest_version_tag in installed_versions:
         if preview:
             return None  # No upgrade available
         print("You have the latest version of " + name + " installed already")
