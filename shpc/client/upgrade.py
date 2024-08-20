@@ -20,8 +20,15 @@ def main(args, parser, extra, subparser):
         cli.settings.registry = [args.registry]
         cli.reload_registry()
 
+    #Upgrade a sinlge module
+    upgrade(args.upgrade_recipe, cli, args)
+
+def upgrade(name, cli, args):
+    """
+    Upgrade a specific module to its latest version.
+    """
     # Add namespace 
-    name = cli.add_namespace(args.upgrade_recipe)
+    name = cli.add_namespace(name)
 
     def get_latest_version(config):
         '''
@@ -92,10 +99,5 @@ def main(args, parser, extra, subparser):
                 force=args.force,
                 container_image=args.container_image,
             )
-
-    
-    
-
-
     
 
