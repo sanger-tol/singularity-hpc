@@ -340,6 +340,13 @@ def get_parser():
         dest="upgrade_all",
         action="store_true",
     )
+
+    upgrade.add_argument(
+        "--preview",
+        "-p",
+        help="Preview available upgrades without performing them.",
+        action="store_true",
+    )
     
     upgrade.add_argument(
         "container_image",

@@ -15,18 +15,35 @@ def main(args, parser, extra, subparser):
     # Update config settings on the fly
     cli.settings.update_params(args.config_params)
 
-    if args.upgrade_all:
+    if args.preview:
+        installed_modules = cli.list(return_modules=True)
+        upgrades_available = {}
+        for module in installed_modules.keys():
+            upgrade_info = upgrade(module, cli, args, preview=True)
+            if upgrade_info:
+                upgrades_available.update(upgrade_info)
+        
+        if upgrades_available:
+            print("These are the latest versions that are available for your modules:")
+            for module, version in upgrades_available.items():
+                print(f"{module}: {version}")
+        else:
+            print("No upgrade needed. All your modules are up to date.")
+
+    elif args.upgrade_all:
         # Upgrade all installed modules
         installed_modules = cli.list(return_modules=True)
+        print("Checking your installed modules for version updates...")
         for module in installed_modules:
             upgrade(module, cli, args)
+            
     else:
         # Upgrade a specific installed module
         upgrade(args.upgrade_recipe, cli, args)
 
-def upgrade(name, cli, args):
+def upgrade(name, cli, args, preview=False):
     """
-    Upgrade a module to its latest version.
+    Upgrade a module to its latest version. Or preview available upgrades from the user's module list
     """
     # Add namespace 
     name = cli.add_namespace(name)
@@ -79,9 +96,14 @@ def upgrade(name, cli, args):
 
     # Compare the latest version with the user's installed version
     if latest_version_tag == current_version_tag:
-        print("You have the latest version of " + name + " installed already" )
+        if preview:
+            return None  # No upgrade available
+        print("You have the latest version of " + name + " installed already")
     else:
-        print("Upgrading " + name + " to its latest version. Version " + latest_version_tag)
+        if preview:
+            return {name: latest_version_tag}  # Return the upgrade info
+        print("Upgrade available for " + name)
+        print("Upgrading to its latest version. Version " + latest_version_tag)
         # Proceed with uninstallation
         if not cli.uninstall(name, force=args.force):
             print("You must uninstall the current version of " + name + " before you can upgrade it")
