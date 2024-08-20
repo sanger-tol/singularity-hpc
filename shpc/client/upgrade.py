@@ -24,7 +24,7 @@ def main(args, parser, extra, subparser):
                 upgrades_available.update(upgrade_info)
         
         if upgrades_available:
-            print("These are the latest versions that are available for your modules:")
+            print("These are the latest versions available for your modules:")
             for module, version in upgrades_available.items():
                 print(f"{module}: {version}")
         else:
@@ -34,9 +34,24 @@ def main(args, parser, extra, subparser):
         # Upgrade all installed modules
         installed_modules = cli.list(return_modules=True)
         print("Checking your installed modules for version updates...")
-        for module in installed_modules:
-            upgrade(module, cli, args)
-            
+        outdated_modules = []
+        for module in installed_modules.keys():
+            upgrade_info = upgrade(module, cli, args, preview=True)
+            if upgrade_info:
+                outdated_modules.append(module)
+
+        # Get the number of available module upgrades
+        num_outdated = len(outdated_modules)
+
+        # Perform upgrade on all outdated modules
+        if num_outdated == 0:
+            print("No upgrade needed. All your modules are up to date.")
+        else:
+            print(f"Found {num_outdated} outdated module(s)")
+            for module in outdated_modules:
+                upgrade(module, cli, args)
+            print("All your modules are now up to date.")
+
     else:
         # Upgrade a specific installed module
         upgrade(args.upgrade_recipe, cli, args)
@@ -102,8 +117,7 @@ def upgrade(name, cli, args, preview=False):
     else:
         if preview:
             return {name: latest_version_tag}  # Return the upgrade info
-        print("Upgrade available for " + name)
-        print("Upgrading to its latest version. Version " + latest_version_tag)
+        print("Upgrading " + name + " to its latest version. Version " + latest_version_tag)
         # Proceed with uninstallation
         if not cli.uninstall(name, force=args.force):
             print("You must uninstall the current version of " + name + " before you can upgrade it")
