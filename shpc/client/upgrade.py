@@ -24,7 +24,7 @@ def main(args, parser, extra, subparser):
                 upgrades_available.update(upgrade_info)
         
         if upgrades_available:
-            print("These are the latest versions available for your modules:")
+            print("These are the latest versions available for your outdated modules:")
             for module, version in upgrades_available.items():
                 print(f"{module}: {version}")
         else:
