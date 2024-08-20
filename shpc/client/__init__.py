@@ -331,10 +331,11 @@ def get_parser():
         formatter_class=argparse.RawTextHelpFormatter,
     )
     upgrade.add_argument(
-        "upgrade_recipe", help="module to upgrade (module/version)")
+        "upgrade_recipe", help="module to upgrade (module/version)", nargs="?",)
     
     upgrade.add_argument(
         "--all",
+        "-a",
         help="Upgrade all installed modules",
         dest="upgrade_all",
         action="store_true",
