@@ -15,17 +15,18 @@ def main(args, parser, extra, subparser):
     # Update config settings on the fly
     cli.settings.update_params(args.config_params)
 
-    # One off custom registry, reload
-    if args.registry:
-        cli.settings.registry = [args.registry]
-        cli.reload_registry()
-
-    #Upgrade a sinlge module
-    upgrade(args.upgrade_recipe, cli, args)
+    if args.upgrade_all:
+        # Upgrade all installed modules
+        installed_modules = cli.list(return_modules=True)
+        for module in installed_modules:
+            upgrade(module, cli, args)
+    else:
+        # Upgrade a specific installed module
+        upgrade(args.upgrade_recipe, cli, args)
 
 def upgrade(name, cli, args):
     """
-    Upgrade a specific module to its latest version.
+    Upgrade a module to its latest version.
     """
     # Add namespace 
     name = cli.add_namespace(name)

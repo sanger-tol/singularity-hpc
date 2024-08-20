@@ -334,6 +334,13 @@ def get_parser():
         "upgrade_recipe", help="module to upgrade (module/version)")
     
     upgrade.add_argument(
+    "--all",
+    help="Upgrade all installed modules",
+    dest="upgrade_all",
+    action="store_true",
+    )
+    
+    upgrade.add_argument(
         "container_image",
         help="path to an existing container image for this software",
         nargs="?",
@@ -493,7 +500,7 @@ def get_parser():
         type=int,
     )
 
-    for command in docgen, show, add, remove, upgrade, sync:
+    for command in docgen, show, add, remove, sync:
         command.add_argument(
             "--registry", help="GitHub repository or local path where registry lives."
         )
