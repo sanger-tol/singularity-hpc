@@ -118,23 +118,24 @@ def upgrade(name, cli, args, preview=False):
         if preview:
             return {name: latest_version_tag}  # Return the upgrade info
         print("Upgrading " + name + " to its latest version. Version " + latest_version_tag)
-        # Proceed with uninstallation
+
+        # Ask if the user wants to unintall old versions
         if not cli.uninstall(name, force=args.force):
-            print("You must uninstall the current version of " + name + " before you can upgrade it")
-        else:
-            # Install the latest version
-            cli.install(
-                name,
-                force=args.force,
-                container_image=args.container_image,
-                keep_path=args.keep_path,
-            )
-            if cli.settings.default_view and not args.no_view:
-                cli.view_install(
-                cli.settings.default_view,
-                name,
-                force=args.force,
-                container_image=args.container_image,
-            )
+            print("Preserving the currently installed versions of " + name)
+        
+        # Install the latest version
+        cli.install(
+            name,
+            force=args.force,
+            container_image=args.container_image,
+            keep_path=args.keep_path,
+        )
+        if cli.settings.default_view and not args.no_view:
+            cli.view_install(
+            cli.settings.default_view,
+            name,
+            force=args.force,
+            container_image=args.container_image,
+        )
     
 
