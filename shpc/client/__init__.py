@@ -334,10 +334,10 @@ def get_parser():
         "upgrade_recipe", help="module to upgrade (module/version)")
     
     upgrade.add_argument(
-    "--all",
-    help="Upgrade all installed modules",
-    dest="upgrade_all",
-    action="store_true",
+        "--all",
+        help="Upgrade all installed modules",
+        dest="upgrade_all",
+        action="store_true",
     )
     
     upgrade.add_argument(
