@@ -20,12 +20,6 @@ def main(args, parser, extra, subparser):
     # Update config settings on the fly
     cli.settings.update_params(args.config_params)
     
-    '''
-    #TODO
-    # Check if the specified module is among the list of installed modules
-    installed_modules = cli.list(return_modules=True)
-    if args.reinstall_recipe in installed_modules:
-    '''
     # Uninstall the software
     cli.uninstall(args.reinstall_recipe, force=args.force)
 
@@ -43,10 +37,6 @@ def main(args, parser, extra, subparser):
         force=args.force,
         container_image=args.container_image,
     )
-    '''
-    else:
-        #exit if its not installed
-        logger.exit(f"{args.reinstall_recipe} is not installed, cannot reinstall.")
-    '''
+    
     
     
