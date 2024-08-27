@@ -20,8 +20,7 @@ def main(args, parser, extra, subparser):
 
     # Ensure the user has modules installed before carrying out upgrade
     if not installed_modules:
-        print("Cannot perform shpc upgrade because you currently do not have any module installed.")
-        return
+        logger.exit("Cannot perform shpc upgrade because you currently do not have any module installed.", 0)
 
     if args.preview:
         upgrades_available = {}
@@ -31,11 +30,11 @@ def main(args, parser, extra, subparser):
                 upgrades_available.update(upgrade_info)
         
         if upgrades_available:
-            print("These are the latest versions available for your outdated modules:")
+            logger.info("These are the latest versions available for your outdated modules:")
             for module, version in upgrades_available.items():
                 print(f"{module}: {version}")
         else:
-            print("No upgrade needed. All your modules are up to date.")
+            logger.info("No upgrade needed. All your modules are up to date.")
 
     elif args.upgrade_all:
         # Upgrade all installed modules
@@ -51,18 +50,18 @@ def main(args, parser, extra, subparser):
 
         # Perform upgrade on all outdated modules
         if num_outdated == 0:
-            print("No upgrade needed. All your modules are up to date.")
+            logger.info("No upgrade needed. All your modules are up to date.")
         else:
-            print(f"Found {num_outdated} outdated module(s)")
+            logger.info(f"Found {num_outdated} outdated module(s)")
             for module in outdated_modules:
                 upgrade(module, cli, args)
-            print("All your modules are now up to date.")
+            logger.info("All your modules are now up to date.")
 
     else:
         # Upgrade a specific installed module
         # First check if that module is installed
         if args.upgrade_recipe not in installed_modules:
-            print(f"You currently do not have {args.upgrade_recipe} installed.\nYou can install it with this command: shpc install {args.upgrade_recipe}.")
+            logger.exit(f"You currently do not have {args.upgrade_recipe} installed.\nYou can install it with this command: shpc install {args.upgrade_recipe}", 0)
         else:
             upgrade(args.upgrade_recipe, cli, args)
 
@@ -99,7 +98,7 @@ def upgrade(name, cli, args, preview=False):
             output = result.stdout
             return output
         except subprocess.CalledProcessError as e:
-            print(f"Failed to execute shpc list command: {e}")
+            logger.error(f"Failed to execute shpc list command: {e}")
             return None
     
     # Load the container configuration for the specified recipe
@@ -113,7 +112,7 @@ def upgrade(name, cli, args, preview=False):
     if latest_version_tag in installed_versions:
         if preview:
             return None  # No upgrade available
-        print("You have the latest version of " + name + " installed already")
+        logger.info("You have the latest version of " + name + " installed already")
     else:
         if preview:
             return {name: latest_version_tag}  # Return the upgrade info
@@ -121,7 +120,7 @@ def upgrade(name, cli, args, preview=False):
 
         # Ask if the user wants to unintall old versions
         if not cli.uninstall(name, force=args.force):
-            print("Preserving the currently installed versions of " + name)
+            logger.info("Old versions of " + name + " were preserved")
         
         # Install the latest version
         cli.install(
