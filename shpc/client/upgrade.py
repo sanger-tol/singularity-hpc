@@ -15,8 +15,15 @@ def main(args, parser, extra, subparser):
     # Update config settings on the fly
     cli.settings.update_params(args.config_params)
 
+    # Get the list of installed modules
+    installed_modules = cli.list(return_modules=True)
+
+    # Ensure the user has modules installed before carrying out upgrade
+    if not installed_modules:
+        print("Cannot perform shpc upgrade because you currently do not have any module installed.")
+        return
+
     if args.preview:
-        installed_modules = cli.list(return_modules=True)
         upgrades_available = {}
         for module in installed_modules.keys():
             upgrade_info = upgrade(module, cli, args, preview=True)
@@ -32,7 +39,6 @@ def main(args, parser, extra, subparser):
 
     elif args.upgrade_all:
         # Upgrade all installed modules
-        installed_modules = cli.list(return_modules=True)
         print("Checking your installed modules for version updates...")
         outdated_modules = []
         for module in installed_modules.keys():
@@ -54,7 +60,11 @@ def main(args, parser, extra, subparser):
 
     else:
         # Upgrade a specific installed module
-        upgrade(args.upgrade_recipe, cli, args)
+        # First check if that module is installed
+        if args.upgrade_recipe not in installed_modules:
+            print(f"You currently do not have {args.upgrade_recipe} installed.\nYou can install it with this command: shpc install {args.upgrade_recipe}.")
+        else:
+            upgrade(args.upgrade_recipe, cli, args)
 
 def upgrade(name, cli, args, preview=False):
     """
