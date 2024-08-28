@@ -19,24 +19,57 @@ def main(args, parser, extra, subparser):
 
     # Update config settings on the fly
     cli.settings.update_params(args.config_params)
-    
-    # Uninstall the software
-    cli.uninstall(args.reinstall_recipe, force=args.force)
 
-    # Install the software
-    cli.install(
-        args.reinstall_recipe,
-        force=args.force,
-        container_image=args.container_image,
-        keep_path=args.keep_path,
-    )
+    # Add namespace
+    name = cli.add_namespace(args.reinstall_recipe)
+    
+    # Reinstall the module
+    reinstall(name, cli, args)
+
+
+def reinstall(name, cli, args):
+    """
+    Reinstall a specific version or all versions of a module.
+    """
+    # Check if the module or version is installed
+    installed_versions = cli.list(return_modules=True).get(name.split(":")[0], [])
+
+    if not installed_versions:
+        logger.exit(f"You currently don't have '{name}' installed.\nTry: shpc install", 0)
+    
+    # Determine if a specific version is requested
+    specific_version = ":" in name
+
+    if specific_version and name.split(":")[1] not in installed_versions:
+        logger.exit(f"The version '{name}' is not installed. Please install it first.", 0)
+
+    # Handle reinstallation logic
+    if specific_version:
+        reinstall_version(name, cli, args)
+    else:
+        for version in installed_versions:
+            version_name = f"{name}:{version}"
+            reinstall_version(version_name, cli, args)
+
+    logger.info(f"Successfully reinstalled of {name}.")
+
+
+def reinstall_version(name, cli, args):
+    """
+    Sub-function to handle the actual reinstallation
+    """
+    print(f"Reinstalling {name}...")
+
+    # Uninstallation 
+    cli.uninstall(name, force=args.force)
+
+    # Installation
+    cli.install(name, force=args.force, container_image=args.container_image, keep_path=args.keep_path)
+
+    # Update the view if necessary
     if cli.settings.default_view and not args.no_view:
-        cli.view_install(
-        cli.settings.default_view,
-        args.reinstall_recipe,
-        force=args.force,
-        container_image=args.container_image,
-    )
-    
-    
-    
+        cli.view_install(cli.settings.default_view, name, force=args.force, container_image=args.container_image)
+
+    logger.info(f"Reinstallation of {name} completed.")
+
+
