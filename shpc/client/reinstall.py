@@ -41,25 +41,25 @@ def reinstall(name, cli, args):
     specific_version = ":" in name
 
     if specific_version and name.split(":")[1] not in installed_versions:
-        logger.exit(f"The version '{name}' is not installed. Please install it first.", 0)
+        logger.exit(f"You currently don't have '{name}' installed.\nTry: shpc install", 0)
 
     # Handle reinstallation logic
     if specific_version:
+        print(f"Reinstalling {name}...")
         reinstall_version(name, cli, args)
+        logger.info(f"Successfully reinstalled of {name}.")
     else:
+        print(f"Reinstalling all versions of {name}...")
         for version in installed_versions:
             version_name = f"{name}:{version}"
             reinstall_version(version_name, cli, args)
-
-    logger.info(f"Successfully reinstalled of {name}.")
+        logger.info(f"Successfully reinstalled all versions of {name}.")
 
 
 def reinstall_version(name, cli, args):
     """
     Sub-function to handle the actual reinstallation
     """
-    print(f"Reinstalling {name}...")
-
     # Uninstallation 
     cli.uninstall(name, force=args.force)
 
@@ -70,6 +70,6 @@ def reinstall_version(name, cli, args):
     if cli.settings.default_view and not args.no_view:
         cli.view_install(cli.settings.default_view, name, force=args.force, container_image=args.container_image)
 
-    logger.info(f"Reinstallation of {name} completed.")
+    
 
 
