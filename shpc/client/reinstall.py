@@ -20,11 +20,31 @@ def main(args, parser, extra, subparser):
     # Update config settings on the fly
     cli.settings.update_params(args.config_params)
 
-    # Add namespace
-    name = cli.add_namespace(args.reinstall_recipe)
+    if args.all:
+        # Ensure no specific recipe is provided
+        if args.reinstall_recipe:
+            logger.exit("You cannot specify a recipe with --all. Use shpc reinstall --all to reinstall all installed modules.")
+        
+        # Reinstall all installed modules
+        installed_modules = cli.list(return_modules=True)
+        if not installed_modules:
+            logger.exit("You currently don't have any installed modules to reinstall.")
+        
+        print("Reinstalling all installed modules...")
+        for module in installed_modules.keys():
+            reinstall(module, cli, args, complete=args.complete)
+        logger.info("All modules reinstalled.")
+
+    else:
+        # Reinstall a specific module
+        if not args.reinstall_recipe:
+            logger.exit("You must specify a recipe to reinstall or use --all to reinstall all installed modules.")
+
+        # Add namespace
+        name = cli.add_namespace(args.reinstall_recipe)
     
-    # Reinstall the module
-    reinstall(name, cli, args, complete=args.complete)
+        # Reinstall the module
+        reinstall(name, cli, args, complete=args.complete)
 
 def reinstall(name, cli, args, complete=False):
     """

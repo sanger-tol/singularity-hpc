@@ -132,7 +132,7 @@ def get_parser():
                 description=help.reinstall_description,
                 formatter_class=argparse.RawTextHelpFormatter,
     )
-    reinstall.add_argument("reinstall_recipe", help="recipe to reinstall")
+    reinstall.add_argument("reinstall_recipe", help="recipe to reinstall",nargs="?",)
     
     reinstall.add_argument(
                 "--complete",
@@ -145,8 +145,8 @@ def get_parser():
     reinstall.add_argument(
                 "--all",
                 "--a",
-                help="reinstall all",
-                nargs="?",
+                help="reinstall all installed modules",
+                action="store_true",
     )
 
     reinstall.add_argument(
