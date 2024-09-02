@@ -24,10 +24,9 @@ def main(args, parser, extra, subparser):
     name = cli.add_namespace(args.reinstall_recipe)
     
     # Reinstall the module
-    reinstall(name, cli, args)
+    reinstall(name, cli, args, complete=args.complete)
 
-
-def reinstall(name, cli, args):
+def reinstall(name, cli, args, complete=False):
     """
     Reinstall a specific version or all versions of a module.
     """
@@ -46,22 +45,25 @@ def reinstall(name, cli, args):
     # Handle reinstallation logic
     if specific_version:
         print(f"Reinstalling {name}...")
-        reinstall_version(name, cli, args)
+        reinstall_version(name, cli, args, complete)
         logger.info(f"Successfully reinstalled of {name}.")
     else:
         print(f"Reinstalling all versions of {name}...")
         for version in installed_versions:
             version_name = f"{name}:{version}"
-            reinstall_version(version_name, cli, args)
+            reinstall_version(version_name, cli, args, complete)
         logger.info(f"Successfully reinstalled all versions of {name}.")
 
 
-def reinstall_version(name, cli, args):
+def reinstall_version(name, cli, args, complete):
     """
     Sub-function to handle the actual reinstallation
     """
-    # Uninstallation 
-    cli.uninstall(name, force=args.force)
+    # Uninstallation process. Containers are kept by default except the user wants a complete reinstall
+    if complete:
+        cli.uninstall(name, force=True, keep_container=True)
+    else:
+        cli.uninstall(name, force=True, keep_container=False)
 
     # Installation
     cli.install(name, force=args.force, container_image=args.container_image, keep_path=args.keep_path)
