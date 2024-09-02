@@ -133,31 +133,19 @@ def get_parser():
                 formatter_class=argparse.RawTextHelpFormatter,
     )
     reinstall.add_argument("reinstall_recipe", help="recipe to reinstall")
-
+    
     reinstall.add_argument(
-                "--container-image",
-                help="path to a container image file",
+                "--complete",
+                "--c",
+                help="do not keep the container image file, when uninstall or reinstall",
                 nargs="?",
     )
+
     reinstall.add_argument(
-                "--keep-path",
-                help="if installing a local container, do not copy the container - use the provided path.",
-                default=False,
-                action="store_true",
-    )
-    reinstall.add_argument(
-                "--no-view",
-                dest="no_view",
-                help="skip installing to the default view, if defined in settings.",
-                action="store_true",
-    )
-    reinstall.add_argument(
-                "--force",
-                "-f",
-                dest="force",
-                help="force reinstall by removing the current installation before reinstalling",
-                default=False,
-                action="store_true",
+                "--all",
+                "--a",
+                help="reinstall all",
+                nargs="?",
     )
 
     # List installed modules

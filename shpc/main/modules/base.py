@@ -85,7 +85,7 @@ class ModuleBase(BaseClient):
             logger.exit("View %s does not exist, cannot uninstall." % view)
         return self.views[view].uninstall(module.module_dir)
 
-    def uninstall(self, name, force=False):
+    def uninstall(self, name, force=False, keep_container=False):
         """
         Given a unique resource identifier, uninstall a module.
         Set "force" to True to bypass the confirmation prompt.
@@ -110,24 +110,28 @@ class ModuleBase(BaseClient):
                 return False # If the user does not want to uninstall
 
         # Podman needs image deletion
-        self.container.delete(module.name)
+        if not keep_container: #For reinstall
+            self.container.delete(module.name)
 
         if module.container_dir != module.module_dir:
             self._uninstall(
                 module.container_dir,
                 self.container_base,
                 "$container_base/%s" % module.name,
+                keep_container,
             )
             self._uninstall(
                 module.module_dir,
                 self.settings.module_base,
                 "$module_base/%s" % module.name,
+                keep_container,
             )
         else:
             self._uninstall(
                 module.module_dir,
                 self.settings.module_base,
                 "$module_base/%s" % module.name,
+                keep_container,
             )
 
         # If we have a wrapper
@@ -136,6 +140,7 @@ class ModuleBase(BaseClient):
                 module.wrapper_dir,
                 self.settings.wrapper_base,
                 "$wrapper_base/%s" % module.name,
+                keep_container,
             )
 
         # If uninstalling the entire module, clean up symbolic links in all views
@@ -151,13 +156,16 @@ class ModuleBase(BaseClient):
 
         return True # Denoting successful uninstallation
 
-    def _uninstall(self, path, base_path, name):
+    def _uninstall(self, path, base_path, name, keep_container):
         """
         Sub function, so we can pass more than one folder from uninstall
         """
         if os.path.exists(path):
             utils.remove_to_base(path, base_path)
-            logger.info("%s and all subdirectories have been removed." % name)
+            if not keep_container:
+                logger.info("%s and all subdirectories have been removed." % name)
+            else:
+                logger.info("%s container was kept but template will be overwritten upon reinstall" % name)
         else:
             logger.warning("%s does not exist." % name)
 

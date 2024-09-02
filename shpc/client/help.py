@@ -39,16 +39,19 @@ install_description = """Install a registry recipe.
   $ shpc install python:3.9.5-alpine
 """
 
-reinstall_description = """Reinstall a module.
+reinstall_description = """Reinstall a module. Containers are kept by default
 
   # Reinstall a specific version of a module
   $ shpc reinstall python:3.12-rc
 
-  # Reinstall the latest version of a module
+  # Reinstall the all versions of a module
   $ shpc reinstall python
 
-  # Force reinstall by removing the current installation before reinstalling
-  $ shpc reinstall python --force
+  # Completely reinstall a module without keeping the container
+  $ shpc reinstall python --complete
+
+  # Reinstall all installed modules
+  $ shpc reinstall python --all
 """
 
 
