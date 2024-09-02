@@ -138,7 +138,8 @@ def get_parser():
                 "--complete",
                 "--c",
                 help="do not keep the container image file, when uninstall or reinstall",
-                nargs="?",
+                default=False,
+                action="store_true"
     )
 
     reinstall.add_argument(

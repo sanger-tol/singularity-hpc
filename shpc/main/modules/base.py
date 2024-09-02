@@ -165,7 +165,7 @@ class ModuleBase(BaseClient):
             if not keep_container:
                 logger.info("%s and all subdirectories have been removed." % name)
             else:
-                logger.info("%s container was kept but template will be overwritten upon reinstall" % name)
+                logger.info("Container was kept but template will be overwritten upon reinstall")
         else:
             logger.warning("%s does not exist." % name)
 
