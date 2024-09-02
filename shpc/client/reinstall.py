@@ -61,7 +61,7 @@ def reinstall_version(name, cli, args, complete):
     """
     # Uninstallation process. By default, uninstall without prompting the user and keep the container except the user wants a complete reinstall
     if not complete:
-        cli.uninstall(name, force=True, keep_containter=True) 
+        cli.uninstall(name, force=True, keep_container=True) 
     else:
         cli.uninstall(name, force=True, keep_container=False) 
 
