@@ -41,7 +41,7 @@ def main(args, parser, extra, subparser):
         if args.preview:
             logger.exit("Cannot use '--all' and '--preview' together. Please choose one option.")
         # Store all outdated modules
-        print("Checking your installed modules for version updates...")
+        print("Checking your list to upgrade outdated modules...")
         outdated_modules = []
         for module in installed_modules.keys():
             upgrade_info = upgrade(module, cli, args, preview=True)
@@ -60,6 +60,7 @@ def main(args, parser, extra, subparser):
 
     # Display all modules available for upgrade from the user's module list
     elif args.preview:
+        print("Checking your list to preview outdated modules...")
         upgrades_available = {}
         for module in installed_modules.keys():
             upgrade_info = upgrade(module, cli, args, preview=True)
