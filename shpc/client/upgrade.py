@@ -72,7 +72,7 @@ def main(args, parser, extra, subparser):
             for module, version in upgrades_available.items():
                 print(f"{module}: {version}")
         else:
-            logger.info("No upgrade needed. All your modules are up to date.")
+            logger.info("Nothing to preview. All your modules are up to date.")
 
     # Warn the user for not providing an argument
     else:
