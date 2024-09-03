@@ -76,7 +76,7 @@ def main(args, parser, extra, subparser):
 
     # Warn the user for not providing an argument
     else:
-        logger.exit("Wrong command. For upgrade description, please use shpc upgrade --h.")
+        logger.exit("Incomplete command. For upgrade help description, please use shpc upgrade --help or shpc upgrade --h.")
 
 
 def upgrade(name, cli, args, preview=False):
