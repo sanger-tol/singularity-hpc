@@ -22,7 +22,44 @@ def main(args, parser, extra, subparser):
     if not installed_modules:
         logger.exit("Cannot perform shpc upgrade because you currently do not have any module installed.", 0)
 
-    if args.preview:
+    # Upgrade a specific installed module 
+    if args.upgrade_recipe:
+        # Avoid invalid argument combinations
+        if args.upgrade_all or args.preview:
+            logger.exit("Cannot use '--all' or '--preview' with a specific recipe. Please choose one option.")
+        # Check if the user specified a version
+        if ":" in args.upgrade_recipe:
+            logger.exit("Please use 'shpc upgrade recipe' without including a version.")
+        # Check if the specific module is installed
+        if args.upgrade_recipe not in installed_modules:
+            logger.exit(f"You currently do not have {args.upgrade_recipe} installed.\nYou can install it with this command: shpc install {args.upgrade_recipe}", 0)
+        upgrade(args.upgrade_recipe, cli, args)
+
+    # Upgrade all installed modules
+    elif args.upgrade_all:
+        # Avoid invalid argument combinations
+        if args.preview:
+            logger.exit("Cannot use '--all' and '--preview' together. Please choose one option.")
+        # Store all outdated modules
+        print("Checking your installed modules for version updates...")
+        outdated_modules = []
+        for module in installed_modules.keys():
+            upgrade_info = upgrade(module, cli, args, preview=True)
+            if upgrade_info:
+                outdated_modules.append(module)
+        # Get the number of the outdated modules
+        num_outdated = len(outdated_modules)
+        # Perform upgrade on each outdated module
+        if num_outdated == 0:
+            logger.info("No upgrade needed. All your modules are up to date.")
+        else:
+            logger.info(f"Found {num_outdated} outdated module(s)")
+            for module in outdated_modules:
+                upgrade(module, cli, args)
+            logger.info("All your modules are now up to date.")
+
+    # Display all modules available for upgrade from the user's module list
+    elif args.preview:
         upgrades_available = {}
         for module in installed_modules.keys():
             upgrade_info = upgrade(module, cli, args, preview=True)
@@ -36,38 +73,10 @@ def main(args, parser, extra, subparser):
         else:
             logger.info("No upgrade needed. All your modules are up to date.")
 
-    elif args.upgrade_all:
-        # Upgrade all installed modules
-        print("Checking your installed modules for version updates...")
-        outdated_modules = []
-        for module in installed_modules.keys():
-            upgrade_info = upgrade(module, cli, args, preview=True)
-            if upgrade_info:
-                outdated_modules.append(module)
-
-        # Get the number of available module upgrades
-        num_outdated = len(outdated_modules)
-
-        # Perform upgrade on all outdated modules
-        if num_outdated == 0:
-            logger.info("No upgrade needed. All your modules are up to date.")
-        else:
-            logger.info(f"Found {num_outdated} outdated module(s)")
-            for module in outdated_modules:
-                upgrade(module, cli, args)
-            logger.info("All your modules are now up to date.")
-
+    # Warn the user for not providing an argument
     else:
-        # Upgrade a specific installed module
-        # Check if the user specified a version in the upgrade_recipe
-        if ":" in args.upgrade_recipe:
-            logger.exit("Please use 'shpc upgrade recipe' without including a version.")
+        logger.exit("Wrong command. For upgrade description, please use shpc upgrade --h.")
 
-        # Check if the specific module is installed
-        if args.upgrade_recipe not in installed_modules:
-            logger.exit(f"You currently do not have {args.upgrade_recipe} installed.\nYou can install it with this command: shpc install {args.upgrade_recipe}", 0)
-        else:
-            upgrade(args.upgrade_recipe, cli, args)
 
 def upgrade(name, cli, args, preview=False):
     """
