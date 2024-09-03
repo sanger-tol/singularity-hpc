@@ -343,8 +343,8 @@ def get_parser():
 
     upgrade.add_argument(
         "--preview",
-        "-p",
-        help="Preview available upgrades without performing them.",
+        "--p",
+        help="Preview available upgrades without upgrading them.",
         action="store_true",
     )
     

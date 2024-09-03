@@ -59,6 +59,11 @@ def main(args, parser, extra, subparser):
 
     else:
         # Upgrade a specific installed module
+
+        # Check if the user specified a version in the upgrade_recipe
+        if args.upgrade_recipe and args.upgrade_recipe.endswith(":"):
+            logger.exit("Please use 'shpc upgrade recipe' without including a version.")
+
         # First check if that module is installed
         if args.upgrade_recipe not in installed_modules:
             logger.exit(f"You currently do not have {args.upgrade_recipe} installed.\nYou can install it with this command: shpc install {args.upgrade_recipe}", 0)

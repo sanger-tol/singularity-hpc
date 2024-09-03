@@ -245,7 +245,17 @@ show_description = """Show the config for a registry entry
 
 upgrade_description = """Upgrade a module to the latest version.
 
-  # Upgrade the specified software to the latest version
+  # Upgrade a specified module by checking if the latest version is installed and installing it if not
   $ shpc upgrade quay.io/biocontainers/samtools
+
+  # Upgrade all modules
+  $ shpc upgrade --all
+      OR
+  $ shpc upgrade --a    
+
+  # Upgrade preview all modules ready available for upgrade
+  $ shpc upgrade --preview 
+      OR
+  $ shpc upgrade --p
 
 """
