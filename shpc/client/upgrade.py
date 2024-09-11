@@ -59,7 +59,8 @@ def main(args, parser, extra, subparser):
             for software in installed_software.keys():
                 upgrade_info = upgrade(software, cli, args, dryrun=True)
                 if upgrade_info:
-                    logger.info(f"{software} is outdated. {upgrade_info} is the latest version available to install.")
+                    for software, version in upgrade_info.items():
+                        logger.info(f"{software} is outdated. Latest version available is {version}")
                     outdated_software.append(software)
                 else:
                     logger.info(f"{software} is up to date.")
