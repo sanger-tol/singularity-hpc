@@ -42,34 +42,51 @@ def main(args, parser, extra, subparser):
             upgrade_info = upgrade(args.upgrade_recipe, cli, args, dryrun=True) # This returns {software:latest_version} if latest is available and None otherwise
             if upgrade_info:
                 for software, version in upgrade_info.items():
-                    logger.info(f"You do not have the latest version installed.\n{software}:{version} is available to install")
+                    logger.info(f"You do not have the latest version installed.\n{software}:{version} is the latest version available to install")
             else:
                 logger.info(f"You have the latest version of {args.upgrade_recipe} installed.")
+        # Upgade the software
         else:
             upgrade(args.upgrade_recipe, cli, args)
 
     # Upgrade all installed software
     elif args.upgrade_all:
-        # Avoid invalid argument combination
-        if args.dryrun:
-            logger.exit("Cannot use '--all' and '--dry-run' together. Please choose one option.")
-        # Store all outdated software
-        print("Checking your list to upgrade outdated software...")
+        # Store a list of all outdated software
         outdated_software = []
-        for software in installed_software.keys():
-            upgrade_info = upgrade(software, cli, args, dryrun=True)
-            if upgrade_info:
-                outdated_software.append(software)
-        # Get the number of the outdated software
-        num_outdated = len(outdated_software)
-        # Perform upgrade on each outdated software
-        if num_outdated == 0:
-            logger.info("No upgrade needed. All your software are up to date.")
+        # Does the user just want a dry-run of all software?
+        if args.dryrun:
+            print("Performing a dry-run on all your software...")
+            for software in installed_software.keys():
+                upgrade_info = upgrade(software, cli, args, dryrun=True)
+                if upgrade_info:
+                    logger.info(f"{software} is outdated. {upgrade_info} is the latest version available to install.")
+                    outdated_software.append(software)
+                else:
+                    logger.info(f"{software} is up to date.")
+            # Provide a report on the dry-run
+            num_outdated = len(outdated_software)
+            if num_outdated == 0:
+                logger.info("All your software are currently up to date.")
+            else:
+                logger.info(f"You have a total of {num_outdated} outdated software.")
+        # Upgrade all software
         else:
-            logger.info(f"Found {num_outdated} outdated software")
-            for software in outdated_software:
-                upgrade(software, cli, args)
-            logger.info("All your software are now up to date.")
+            # Store all outdated software
+            print("Checking your list to upgrade outdated software...")
+            for software in installed_software.keys():
+                upgrade_info = upgrade(software, cli, args, dryrun=True)
+                if upgrade_info:
+                    outdated_software.append(software)
+            # Get the number of the outdated software
+            num_outdated = len(outdated_software)
+            # Perform upgrade on each outdated software
+            if num_outdated == 0:
+                logger.info("No upgrade needed. All your software are up to date.")
+            else:
+                logger.info(f"Found {num_outdated} outdated software")
+                for software in outdated_software:
+                    upgrade(software, cli, args)
+                logger.info("All your software are now up to date.")
 
     # Display all software available for upgrade from the user's software list
     elif args.dryrun:
@@ -79,7 +96,7 @@ def main(args, parser, extra, subparser):
             upgrade_info = upgrade(software, cli, args, dryrun=True)
             if upgrade_info:
                 upgrades_available.update(upgrade_info)
-        
+        # Provide a report on the dry-run
         if upgrades_available:
             logger.info("These are the latest versions available for your outdated software:")
             for software, version in upgrades_available.items():
