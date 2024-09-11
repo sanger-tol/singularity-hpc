@@ -324,7 +324,7 @@ def get_parser():
         action="store_true",
     )
 
-    # Upgrade a module to its latest version
+    # Upgrade a software to its latest version
     upgrade = subparsers.add_parser(
         "upgrade",
         description=help.upgrade_description,
