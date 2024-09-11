@@ -71,7 +71,6 @@ def main(args, parser, extra, subparser):
                 logger.info(f"You have a total of {num_outdated} outdated software.")
         # Upgrade all software
         else:
-            # Store all outdated software
             print("Checking your list to upgrade outdated software...")
             for software in installed_software.keys():
                 upgrade_info = upgrade(software, cli, args, dryrun=True)
