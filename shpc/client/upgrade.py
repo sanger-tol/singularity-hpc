@@ -15,73 +15,73 @@ def main(args, parser, extra, subparser):
     # Update config settings on the fly
     cli.settings.update_params(args.config_params)
 
-    # Get the list of installed modules
-    installed_modules = cli.list(return_modules=True)
+    # Get the list of installed software
+    installed_software = cli.list(return_modules=True)
 
-    # Ensure the user has modules installed before carrying out upgrade
-    if not installed_modules:
-        logger.exit("Cannot perform shpc upgrade because you currently do not have any module installed.", 0)
+    # Ensure the user has software installed before carrying out upgrade
+    if not installed_software:
+        logger.exit("Cannot perform shpc upgrade because you currently do not have any software installed.", 0)
 
-    # Upgrade a specific installed module 
+    # Upgrade a specific installed software 
     if args.upgrade_recipe:
         # Avoid invalid argument combinations
-        if args.upgrade_all or args.preview:
-            logger.exit("Cannot use '--all' or '--preview' with a specific recipe. Please choose one option.")
+        if args.upgrade_all or args.dryrun:
+            logger.exit("Cannot use '--all' or '--dry-run' with a specific recipe. Please choose one option.")
         # Check if the user specified a version
         if ":" in args.upgrade_recipe:
             logger.exit("Please use 'shpc upgrade recipe' without including a version.")
-        # Check if the specific module is installed
-        if args.upgrade_recipe not in installed_modules:
+        # Check if the specific software is installed
+        if args.upgrade_recipe not in installed_software:
             logger.exit(f"You currently do not have {args.upgrade_recipe} installed.\nYou can install it with this command: shpc install {args.upgrade_recipe}", 0)
         upgrade(args.upgrade_recipe, cli, args)
 
-    # Upgrade all installed modules
+    # Upgrade all installed software
     elif args.upgrade_all:
         # Avoid invalid argument combinations
-        if args.preview:
-            logger.exit("Cannot use '--all' and '--preview' together. Please choose one option.")
-        # Store all outdated modules
-        print("Checking your list to upgrade outdated modules...")
-        outdated_modules = []
-        for module in installed_modules.keys():
-            upgrade_info = upgrade(module, cli, args, preview=True)
+        if args.dryrun:
+            logger.exit("Cannot use '--all' and '--dry-run' together. Please choose one option.")
+        # Store all outdated software
+        print("Checking your list to upgrade outdated software...")
+        outdated_software = []
+        for software in installed_software.keys():
+            upgrade_info = upgrade(software, cli, args, dryrun=True)
             if upgrade_info:
-                outdated_modules.append(module)
-        # Get the number of the outdated modules
-        num_outdated = len(outdated_modules)
-        # Perform upgrade on each outdated module
+                outdated_software.append(software)
+        # Get the number of the outdated software
+        num_outdated = len(outdated_software)
+        # Perform upgrade on each outdated software
         if num_outdated == 0:
-            logger.info("No upgrade needed. All your modules are up to date.")
+            logger.info("No upgrade needed. All your software are up to date.")
         else:
-            logger.info(f"Found {num_outdated} outdated module(s)")
-            for module in outdated_modules:
-                upgrade(module, cli, args)
-            logger.info("All your modules are now up to date.")
+            logger.info(f"Found {num_outdated} outdated software")
+            for software in outdated_software:
+                upgrade(software, cli, args)
+            logger.info("All your software are now up to date.")
 
-    # Display all modules available for upgrade from the user's module list
-    elif args.preview:
-        print("Checking your list to preview outdated modules...")
+    # Display all software available for upgrade from the user's software list
+    elif args.dryrun:
+        print("Checking your list to preview outdated software...")
         upgrades_available = {}
-        for module in installed_modules.keys():
-            upgrade_info = upgrade(module, cli, args, preview=True)
+        for software in installed_software.keys():
+            upgrade_info = upgrade(software, cli, args, dryrun=True)
             if upgrade_info:
                 upgrades_available.update(upgrade_info)
         
         if upgrades_available:
-            logger.info("These are the latest versions available for your outdated modules:")
-            for module, version in upgrades_available.items():
-                print(f"{module}: {version}")
+            logger.info("These are the latest versions available for your outdated software:")
+            for software, version in upgrades_available.items():
+                print(f"{software}: {version}")
         else:
-            logger.info("Nothing to preview. All your modules are up to date.")
+            logger.info("Nothing to preview. All your software are up to date.")
 
     # Warn the user for not providing an argument
     else:
-        logger.exit("Incomplete command. For upgrade help description, please use shpc upgrade --help or shpc upgrade --h.")
+        logger.exit("Incomplete command. For upgrade help description, please use shpc upgrade --help or shpc upgrade -h.")
 
 
-def upgrade(name, cli, args, preview=False):
+def upgrade(name, cli, args, dryrun=False):
     """
-    Upgrade a module to its latest version. Or preview available upgrades from the user's module list
+    Upgrade a software to its latest version. Or preview available upgrades from the user's software list
     """
     # Add namespace 
     name = cli.add_namespace(name)
@@ -100,7 +100,7 @@ def upgrade(name, cli, args, preview=False):
 
     def get_installed_versions(recipe):
         '''
-        Retrieve the installed versions of the recipe from the user's module list
+        Retrieve the installed versions of the recipe from the user's software list
         '''
         try:
             result = subprocess.run(
@@ -124,11 +124,11 @@ def upgrade(name, cli, args, preview=False):
 
     # Compare the latest version with the user's installed version
     if latest_version_tag in installed_versions:
-        if preview:
+        if dryrun:
             return None  # No upgrade available
         logger.info("You have the latest version of " + name + " installed already")
     else:
-        if preview:
+        if dryrun:
             return {name: latest_version_tag}  # Return the upgrade info
         print("Upgrading " + name + " to its latest version. Version " + latest_version_tag)
 

@@ -331,20 +331,21 @@ def get_parser():
         formatter_class=argparse.RawTextHelpFormatter,
     )
     upgrade.add_argument(
-        "upgrade_recipe", help="module to upgrade (module/version)", nargs="?",)
+        "upgrade_recipe", help="software to upgrade", nargs="?",)
     
     upgrade.add_argument(
         "--all",
         "-a",
-        help="Upgrade all installed modules",
+        help="Upgrade all installed software",
         dest="upgrade_all",
         action="store_true",
     )
 
     upgrade.add_argument(
-        "--preview",
-        "--p",
-        help="Preview available upgrades without upgrading them.",
+        "--dry-run",
+        "-d",
+        dest="dryrun",
+        help="Do a dry run to view outdated software without upgrading them.",
         action="store_true",
     )
     
