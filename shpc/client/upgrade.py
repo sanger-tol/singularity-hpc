@@ -24,22 +24,28 @@ def main(args, parser, extra, subparser):
 
     # Avoid invalid argument combination
     if args.upgrade_recipe and args.upgrade_all and args.dryrun:
-        logger.exit("Cannot use '--all', '--dry-run', and a specific recipe together. Please choose one option.")
+        logger.exit("Cannot use '--all', '--dry-run', and a specific recipe together.\nFor upgrade help description, please use shpc upgrade --help or shpc upgrade -h.")
 
     # Upgrade a specific installed software 
     if args.upgrade_recipe:
         # Avoid invalid argument combination
         if args.upgrade_all:
             logger.exit("Cannot use '--all' with a specific recipe. Please choose one option.")
-        if args.dryrun:
-            logger.exit("Cannot use '--dry-run' with a specific recipe. Please choose one option.")
         # Check if the user specified a version
         if ":" in args.upgrade_recipe:
             logger.exit("Please use 'shpc upgrade recipe' without including a version.")
         # Check if the specific software is installed
         if args.upgrade_recipe not in installed_software:
             logger.exit(f"You currently do not have {args.upgrade_recipe} installed.\nYou can install it with this command: shpc install {args.upgrade_recipe}", 0)
-        upgrade(args.upgrade_recipe, cli, args)
+        # Does the user just want a dry-run of the specific software?
+        if args.dryrun:
+            upgrade_info = upgrade(args.upgrade_recipe, cli, args, dryrun=True) # This returns {software:latest_version} if latest is available and None otherwise
+            if upgrade_info:
+                logger.info(f"You do not have the latest version installed.\n{upgrade_info} is available to install")
+            else:
+                logger.info(f"You have the latest version of {args.upgrade_recipe} installed.")
+        else:
+            upgrade(args.upgrade_recipe, cli, args)
 
     # Upgrade all installed software
     elif args.upgrade_all:
@@ -82,7 +88,7 @@ def main(args, parser, extra, subparser):
 
     # Warn the user for not providing an argument
     else:
-        logger.exit("Incomplete command. For upgrade help description, please use shpc upgrade --help or shpc upgrade -h.")
+        logger.exit("Incomplete command.\nFor upgrade help description, please use shpc upgrade --help or shpc upgrade -h.")
 
 
 def upgrade(name, cli, args, dryrun=False):
