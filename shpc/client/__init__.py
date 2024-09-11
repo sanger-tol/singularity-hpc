@@ -336,7 +336,7 @@ def get_parser():
     upgrade.add_argument(
         "--all",
         "-a",
-        help="Upgrade all installed software",
+        help="upgrade all installed software",
         dest="upgrade_all",
         action="store_true",
     )
@@ -345,7 +345,7 @@ def get_parser():
         "--dry-run",
         "-d",
         dest="dryrun",
-        help="Do a dry run to view outdated software without upgrading them.",
+        help="do a dry run to view outdated software without upgrading them.",
         action="store_true",
     )
     

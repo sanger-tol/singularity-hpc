@@ -22,11 +22,17 @@ def main(args, parser, extra, subparser):
     if not installed_software:
         logger.exit("Cannot perform shpc upgrade because you currently do not have any software installed.", 0)
 
+    # Avoid invalid argument combination
+    if args.upgrade_recipe and args.upgrade_all and args.dryrun:
+        logger.exit("Cannot use '--all', '--dry-run', and a specific recipe together. Please choose one option.")
+
     # Upgrade a specific installed software 
     if args.upgrade_recipe:
-        # Avoid invalid argument combinations
-        if args.upgrade_all or args.dryrun:
-            logger.exit("Cannot use '--all' or '--dry-run' with a specific recipe. Please choose one option.")
+        # Avoid invalid argument combination
+        if args.upgrade_all:
+            logger.exit("Cannot use '--all' with a specific recipe. Please choose one option.")
+        if args.dryrun:
+            logger.exit("Cannot use '--dry-run' with a specific recipe. Please choose one option.")
         # Check if the user specified a version
         if ":" in args.upgrade_recipe:
             logger.exit("Please use 'shpc upgrade recipe' without including a version.")
@@ -37,7 +43,7 @@ def main(args, parser, extra, subparser):
 
     # Upgrade all installed software
     elif args.upgrade_all:
-        # Avoid invalid argument combinations
+        # Avoid invalid argument combination
         if args.dryrun:
             logger.exit("Cannot use '--all' and '--dry-run' together. Please choose one option.")
         # Store all outdated software
