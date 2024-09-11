@@ -261,7 +261,7 @@ upgrade_description = """Upgrade software to the latest version.
 
   # Valid arguement combinations:
   # Perform dry-run on a specific software to check if the latest is installed or available without running an upgrade
-  $ shpc upgrade software --dry-run or -d
+  $ shpc upgrade software --dry-run
       OR
   $ shpc upgrade software -d
 
