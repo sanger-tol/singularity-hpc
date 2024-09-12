@@ -48,7 +48,7 @@ def main(args, parser, extra, subparser):
         if args.dry_run:
             upgrade_info = upgrade(args.upgrade_recipe, cli, args, dry_run=True) # This returns {software:latest_version} if latest is available and None otherwise
             if upgrade_info:
-                for software, version in upgrade_info.items():
+                for version in upgrade_info.values():
                     logger.info(f"You do not have the latest version installed.\nLatest version avaiable is {version}")
             else:
                 logger.info(f"You have the latest version of {args.upgrade_recipe} installed.")
