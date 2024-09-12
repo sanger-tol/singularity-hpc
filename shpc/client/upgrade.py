@@ -22,6 +22,9 @@ def main(args, parser, extra, subparser):
     if not installed_software:
         logger.exit("Cannot perform shpc upgrade because you currently do not have any software installed.", 0)
 
+    # Check if the provided recipe is known in the registry
+    cli._load_container(args.upgrade_recipe)
+
     # Avoid invalid argument combination
     if args.upgrade_recipe and args.upgrade_all and args.dry_run:
         logger.exit("Cannot use '--all', '--dry-run', and a specific recipe together.\nFor upgrade help description, please use shpc upgrade --help or shpc upgrade -h.")
