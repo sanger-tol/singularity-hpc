@@ -344,8 +344,8 @@ def get_parser():
     upgrade.add_argument(
         "--dry-run",
         "-d",
-        dest="dryrun",
-        help="do a dry run to view outdated software without upgrading them.",
+        dest="dry_run",
+        help="do a dry run to view a list of the latest versions avaialble for the user's outdated software without upgrading them.",
         action="store_true",
     )
     

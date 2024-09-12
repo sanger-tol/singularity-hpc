@@ -23,7 +23,7 @@ def main(args, parser, extra, subparser):
         logger.exit("Cannot perform shpc upgrade because you currently do not have any software installed.", 0)
 
     # Avoid invalid argument combination
-    if args.upgrade_recipe and args.upgrade_all and args.dryrun:
+    if args.upgrade_recipe and args.upgrade_all and args.dry_run:
         logger.exit("Cannot use '--all', '--dry-run', and a specific recipe together.\nFor upgrade help description, please use shpc upgrade --help or shpc upgrade -h.")
 
     # Upgrade a specific installed software 
@@ -38,8 +38,8 @@ def main(args, parser, extra, subparser):
         if args.upgrade_recipe not in installed_software:
             logger.exit(f"You currently do not have {args.upgrade_recipe} installed.\nYou can install it with this command: shpc install {args.upgrade_recipe}", 0)
         # Does the user just want a dry-run of the specific software?
-        if args.dryrun:
-            upgrade_info = upgrade(args.upgrade_recipe, cli, args, dryrun=True) # This returns {software:latest_version} if latest is available and None otherwise
+        if args.dry_run:
+            upgrade_info = upgrade(args.upgrade_recipe, cli, args, dry_run=True) # This returns {software:latest_version} if latest is available and None otherwise
             if upgrade_info:
                 for software, version in upgrade_info.items():
                     logger.info(f"You do not have the latest version installed.\n{software}:{version} is the latest version available to install")
@@ -54,10 +54,10 @@ def main(args, parser, extra, subparser):
         # Store a list of all outdated software
         outdated_software = []
         # Does the user just want a dry-run of all software?
-        if args.dryrun:
+        if args.dry_run:
             print("Performing a dry-run on all your software...")
             for software in installed_software.keys():
-                upgrade_info = upgrade(software, cli, args, dryrun=True)
+                upgrade_info = upgrade(software, cli, args, dry_run=True)
                 if upgrade_info:
                     for software, version in upgrade_info.items():
                         logger.info(f"{software} is outdated. Latest version available is {version}")
@@ -74,7 +74,7 @@ def main(args, parser, extra, subparser):
         else:
             print("Checking your list to upgrade outdated software...")
             for software in installed_software.keys():
-                upgrade_info = upgrade(software, cli, args, dryrun=True)
+                upgrade_info = upgrade(software, cli, args, dry_run=True)
                 if upgrade_info:
                     outdated_software.append(software)
             # Get the number of the outdated software
@@ -89,11 +89,11 @@ def main(args, parser, extra, subparser):
                 logger.info("All your software are now up to date.")
 
     # Display all software available for upgrade from the user's software list
-    elif args.dryrun:
+    elif args.dry_run:
         print("Checking your list to preview outdated software...")
         upgrades_available = {}
         for software in installed_software.keys():
-            upgrade_info = upgrade(software, cli, args, dryrun=True)
+            upgrade_info = upgrade(software, cli, args, dry_run=True)
             if upgrade_info:
                 upgrades_available.update(upgrade_info)
         # Provide a report on the dry-run
@@ -109,7 +109,7 @@ def main(args, parser, extra, subparser):
         logger.exit("Incomplete command.\nFor upgrade help description, please use shpc upgrade --help or shpc upgrade -h.")
 
 
-def upgrade(name, cli, args, dryrun=False):
+def upgrade(name, cli, args, dry_run=False):
     """
     Upgrade a software to its latest version. Or preview available upgrades from the user's software list
     """
@@ -154,11 +154,11 @@ def upgrade(name, cli, args, dryrun=False):
 
     # Compare the latest version with the user's installed version
     if latest_version_tag in installed_versions:
-        if dryrun:
+        if dry_run:
             return None  # No upgrade available
         logger.info("You have the latest version of " + name + " installed already")
     else:
-        if dryrun:
+        if dry_run:
             return {name: latest_version_tag}  # Return the upgrade info
         print("Upgrading " + name + " to its latest version. Version " + latest_version_tag)
 
