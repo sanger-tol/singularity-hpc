@@ -23,7 +23,10 @@ def main(args, parser, extra, subparser):
         logger.exit("Cannot perform shpc upgrade because you currently do not have any software installed.", 0)
 
     # Check if the provided recipe is known in the registry
-    cli._load_container(args.upgrade_recipe)
+    try:
+        cli._load_container(args.upgrade_recipe)
+    except SystemExit:
+        logger.exit(f"{args.upgrade_recipe} is an invalid recipe.\nThis means it cannot be upgraded because it is not installed, and cannot be installed because it is not known in any registry.\nPlease check the name or try a different recipe.")
 
     # Avoid invalid argument combination
     if args.upgrade_recipe and args.upgrade_all and args.dry_run:
