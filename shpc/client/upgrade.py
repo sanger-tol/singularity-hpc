@@ -22,19 +22,19 @@ def main(args, parser, extra, subparser):
     if not installed_software:
         logger.exit("Cannot perform shpc upgrade because you currently do not have any software installed.", 0)
 
-    # Check if the provided recipe is known in the registry
-    try:
-        cli._load_container(args.upgrade_recipe)
-    except SystemExit:
-        logger.exit(f"{args.upgrade_recipe} is an invalid recipe.\nThis means it cannot be upgraded because it is not installed, and cannot be installed because it is not known in any registry.\nPlease check the name or try a different recipe.")
-
     # Avoid invalid argument combination
     if args.upgrade_recipe and args.upgrade_all and args.dry_run:
         logger.exit("Cannot use '--all', '--dry-run', and a specific recipe together.\nFor upgrade help description, please use shpc upgrade --help or shpc upgrade -h.")
 
     # Upgrade a specific installed software 
     if args.upgrade_recipe:
-        # Avoid invalid argument combination
+        # Check if the provided recipe is known in any registry
+        try:
+            cli._load_container(args.upgrade_recipe)
+        except SystemExit:
+            # Give additional messages relating to shpc upgrade, to the original exit message in _load_container function 
+            logger.exit("This means it cannot be upgraded because it is not installed, and cannot be installed because it is not known in any registry.\nPlease check the name or try a different recipe.")
+        # Check if the user typed an invalid argument combination
         if args.upgrade_all:
             logger.exit("Cannot use '--all' with a specific recipe. Please choose one option.")
         # Check if the user specified a version
@@ -43,6 +43,7 @@ def main(args, parser, extra, subparser):
         # Check if the specific software is installed
         if args.upgrade_recipe not in installed_software:
             logger.exit(f"You currently do not have {args.upgrade_recipe} installed.\nYou can install it with this command: shpc install {args.upgrade_recipe}", 0)
+        
         # Does the user just want a dry-run of the specific software?
         if args.dry_run:
             upgrade_info = upgrade(args.upgrade_recipe, cli, args, dry_run=True) # This returns {software:latest_version} if latest is available and None otherwise
@@ -51,6 +52,7 @@ def main(args, parser, extra, subparser):
                     logger.info(f"You do not have the latest version installed.\n{software}:{version} is the latest version available to install")
             else:
                 logger.info(f"You have the latest version of {args.upgrade_recipe} installed.")
+
         # Upgade the software
         else:
             upgrade(args.upgrade_recipe, cli, args)
@@ -59,6 +61,7 @@ def main(args, parser, extra, subparser):
     elif args.upgrade_all:
         # Store a list of all outdated software
         outdated_software = []
+
         # Does the user just want a dry-run of all software?
         if args.dry_run:
             print("Performing a dry-run on all your software...")
@@ -76,6 +79,7 @@ def main(args, parser, extra, subparser):
                 logger.info("All your software are currently up to date.")
             else:
                 logger.info(f"You have a total of {num_outdated} outdated software.")
+
         # Upgrade all software
         else:
             print("Checking your list to upgrade outdated software...")
