@@ -81,12 +81,8 @@ def reinstall_version(name, cli, args, update_containers):
     # Uninstallation process. By default, uninstall without prompting the user and keep the container except the user wants a complete reinstall
     cli.uninstall(name, force=True, keep_container=not update_containers) 
     
-    # Installation
-    cli.install(name, force=args.force, container_image=args.container_image, keep_path=args.keep_path)
-
-    # Update the view if necessary
-    if cli.settings.default_view and not args.no_view:
-        cli.view_install(cli.settings.default_view, name, force=args.force, container_image=args.container_image)
+    # Installation process
+    cli.install(name, container_image=args.container_image, keep_path=args.keep_path)
 
     
 

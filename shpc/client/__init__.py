@@ -163,21 +163,6 @@ def get_parser():
         action="store_true",
     )
 
-    reinstall.add_argument(
-        "--no-view",
-        dest="no_view",
-        help="skip installing to the default view, if defined in settings.",
-        action="store_true",
-    )
-    reinstall.add_argument(
-        "--force",
-        "-f",
-        dest="force",
-        help="replace existing symlinks",
-        default=False,
-        action="store_true",
-    )
-
     # List installed modules
     listing = subparsers.add_parser(
         "list",
