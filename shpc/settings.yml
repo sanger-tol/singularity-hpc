@@ -5,7 +5,7 @@
 # set a default module system
 # Currently lmod and tcl are supported. To request an additional system,
 # please open an issue https://github.com/singularityhub/singularity-hpc
-module_sys: tcl
+module_sys: lmod
 
 # config editor
 config_editor: vim

@@ -126,7 +126,7 @@ def get_parser():
         action="store_true",
     )
 
-    #Reinstall an installed recipe
+    #Reinstall an installed software
     reinstall = subparsers.add_parser(
                 "reinstall",
                 description=help.reinstall_description,
@@ -135,17 +135,18 @@ def get_parser():
     reinstall.add_argument("reinstall_recipe", help="recipe to reinstall",nargs="?",)
     
     reinstall.add_argument(
-                "--complete",
-                "--c",
-                help="do not keep the container image file, when uninstall or reinstall",
+                "--update-containers",
+                "-u",
+                dest="update_containers",
+                help="do not keep the container image file, when reinstalling",
                 default=False,
                 action="store_true"
     )
 
     reinstall.add_argument(
                 "--all",
-                "--a",
-                help="reinstall all installed modules",
+                "-a",
+                help="reinstall all installed software",
                 action="store_true",
     )
 
