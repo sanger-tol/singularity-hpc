@@ -47,11 +47,20 @@ reinstall_description = """Reinstall a software. Containers are kept by default
   # Reinstall the all versions of a software
   $ shpc reinstall python
 
-  # Completely reinstall a software without keeping the container
-  $ shpc reinstall python --complete
-
   # Reinstall all installed software
   $ shpc reinstall --all
+    OR
+  $ shpc reinstall -a
+
+  # Completely reinstall a software without keeping the container
+  $ shpc reinstall python --update_container
+    OR
+  $ shpc reinstall python -u
+
+  # Completely reinstall all software without keeping the container
+  $ shpc reinstall --all --update_container
+    OR
+  $ shpc reinstall -a -u
 
   # Invalid arguement combinations:
   $ shpc reinstall python --all
