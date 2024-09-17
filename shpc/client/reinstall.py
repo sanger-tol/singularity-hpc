@@ -39,7 +39,7 @@ def main(args, parser, extra, subparser):
     else:
         # Reinstall a specific software
         if not args.reinstall_recipe:
-            parser.error("You must specify a recipe to reinstall or use --all to reinstall all installed software.")
+            subparser.error("You must specify a recipe to reinstall or use --all to reinstall all installed software.")
 
         # Add namespace
         name = cli.add_namespace(args.reinstall_recipe)
