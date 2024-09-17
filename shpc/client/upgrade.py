@@ -1,14 +1,14 @@
-__author__ = "Vanessa Sochat"
-__copyright__ = "Copyright 2021-2024, Vanessa Sochat"
+__author__ = "Ausbeth Aguguo"
+__copyright__ = "Copyright 2021-2024, Ausbeth Aguguo"
 __license__ = "MPL 2.0"
 
-import shpc.utils
+import shpc.utils as utils
 from shpc.logger import logger
 import subprocess
 
 def main(args, parser, extra, subparser):
     from shpc.main import get_client
-    shpc.utils.ensure_no_extra(extra)
+    utils.ensure_no_extra(extra)
 
     cli = get_client(quiet=args.quiet, settings_file=args.settings_file)
 
@@ -172,23 +172,24 @@ def upgrade(name, cli, args, dry_run=False):
             return {name: latest_version_tag}  # Return the upgrade info
         print("Upgrading " + name + " to its latest version. Version " + latest_version_tag)
 
+        # Get the list of views the software was in
+        views_with_module = set()
+        for view_name, entry in cli.views.items():
+            if entry.exists(cli.new_module(name).module_dir):
+                views_with_module.add(view_name)
+
         # Ask if the user wants to unintall old versions
         if not cli.uninstall(name, force=args.force):
             logger.info("Old versions of " + name + " were preserved")
         
         # Install the latest version
-        cli.install(
-            name,
-            force=args.force,
-            container_image=args.container_image,
-            keep_path=args.keep_path,
-        )
-        if cli.settings.default_view and not args.no_view:
-            cli.view_install(
-            cli.settings.default_view,
-            name,
-            force=args.force,
-            container_image=args.container_image,
-        )
-    
+        cli.install(name)
+
+        # Install the latest version to views where the outdated version was found
+        msg = f"Do you also want to install the latest version of {name} to the view(s) of the previous version(s)?"
+        if utils.confirm_action(msg, force=args.force):
+            for view_name in views_with_module:
+                cli.view_install(view_name, name)
+                logger.info(f"Installed the latest version of {name} to view: {view_name}")
+        
 

@@ -336,7 +336,7 @@ def get_parser():
     upgrade.add_argument(
         "--all",
         "-a",
-        help="upgrade all installed software",
+        help="upgrade all installed software.",
         dest="upgrade_all",
         action="store_true",
     )
@@ -348,32 +348,12 @@ def get_parser():
         help="do a dry run to view a list of the latest versions avaialble for the user's outdated software without upgrading them.",
         action="store_true",
     )
-    
-    upgrade.add_argument(
-        "container_image",
-        help="path to an existing container image for this software",
-        nargs="?",
-    )
-
-    upgrade.add_argument(
-        "--keep-path",
-        help="if installing a local container, do not copy the container - use the provided path.",
-        default=False,
-        action="store_true",
-    )
-
-    upgrade.add_argument(
-        "--no-view",
-        dest="no_view",
-        help="skip installing to the default view, if defined in settings.",
-        action="store_true",
-    )
 
     upgrade.add_argument(
         "--force",
         "-f",
         dest="force",
-        help="force upgrade without prompting for confirmation to uninstall current version",
+        help="force upgrade without prompting for confirmation to uninstall current version(s) or install latest version to view(s).",
         default=False,
         action="store_true",
     )
