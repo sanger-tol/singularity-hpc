@@ -65,7 +65,7 @@ def reinstall(name, cli, args, update_containers=False):
     if specific_version:
         print(f"Reinstalling {name}...")
         reinstall_version(name, cli, args, update_containers)
-        logger.info(f"Successfully reinstalled of {name}.")
+        logger.info(f"Successfully reinstalled {name}.")
     else:
         print(f"Reinstalling all versions of {name}...")
         for version in installed_versions:
@@ -100,7 +100,7 @@ def reinstall_version(name, cli, args, update_containers):
     # Restore the software to the captured views
     for view_name in views_with_module:
         cli.view_install(view_name, name)
-        logger.info(f"Restored {name} to view: '{view_name}'")
+        logger.info(f"Restored {name} to view: {view_name}")
 
     
 
