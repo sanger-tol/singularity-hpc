@@ -20,6 +20,8 @@ def main(args, parser, extra, subparser):
     # Update config settings on the fly
     cli.settings.update_params(args.config_params)
 
+    
+
     if args.all:
         # Check if the user typed an invalid argument combination
         if args.reinstall_recipe:
@@ -51,6 +53,13 @@ def reinstall(name, cli, args, update_containers=False):
     """
     Reinstall a specific version or all versions of a software.
     """
+     # Check if the provided recipe is known in any registry
+    try:
+        cli._load_container(name)
+    except SystemExit:
+        # Give additional messages relating to shpc reinstall, to the original exit message in _load_container function 
+        logger.exit("This means it cannot be reinstalled because it is not installed, and cannot be installed because it is not known in any registry.\nPlease check the name or try a different recipe.")
+
     # Check if the software or version is installed
     installed_versions = cli.list(return_modules=True).get(name.split(":")[0], [])
     if not installed_versions:
