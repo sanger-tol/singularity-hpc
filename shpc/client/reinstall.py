@@ -82,7 +82,7 @@ def reinstall_version(name, cli, args, update_containers):
     cli.uninstall(name, force=True, keep_container=not update_containers) 
     
     # Installation process
-    cli.install(name, container_image=args.container_image, keep_path=args.keep_path)
+    cli.install(name)
 
     
 

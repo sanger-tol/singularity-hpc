@@ -150,19 +150,6 @@ def get_parser():
                 action="store_true",
     )
 
-    reinstall.add_argument(
-        "container_image",
-        help="path to an existing container image for this software",
-        nargs="?",
-    )
-
-    reinstall.add_argument(
-        "--keep-path",
-        help="if installing a local container, do not copy the container - use the provided path.",
-        default=False,
-        action="store_true",
-    )
-
     # List installed modules
     listing = subparsers.add_parser(
         "list",
