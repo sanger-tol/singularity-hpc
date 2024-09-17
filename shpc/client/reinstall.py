@@ -1,4 +1,4 @@
-__author__ = "Vanessa Sochat"
+__author__ = "Ausbeth Aguguo"
 __copyright__ = "Copyright 2021-2024, Vanessa Sochat"
 __license__ = "MPL 2.0"
 
@@ -78,6 +78,13 @@ def reinstall_version(name, cli, args, update_containers):
     """
     Sub-function to handle the actual reinstallation
     """
+
+    # Get the list of views the software was in
+    views_with_module = set()
+    for view_name, entry in cli.views.items():
+        if entry.exists(cli.new_module(name).module_dir):
+            views_with_module.add(view_name)
+
     # Uninstallation process. By default, uninstall without prompting the user and keep the container except the user wants a complete reinstall
     cli.uninstall(name, force=True, keep_container=not update_containers) 
 
@@ -89,6 +96,11 @@ def reinstall_version(name, cli, args, update_containers):
     
     # Installation process
     cli.install(name)
+
+    # Restore the software to the captured views
+    for view_name in views_with_module:
+        cli.view_install(view_name, name)
+        logger.info(f"Restored {name} to view: '{view_name}'")
 
     
 
