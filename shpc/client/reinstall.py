@@ -80,6 +80,12 @@ def reinstall_version(name, cli, args, update_containers):
     """
     # Uninstallation process. By default, uninstall without prompting the user and keep the container except the user wants a complete reinstall
     cli.uninstall(name, force=True, keep_container=not update_containers) 
+
+    # Display a helpful message to the user about the state of the container during reinstall process
+    if not update_containers:
+        print("Container was successfully preserved, module files and wrapper scripts will be overwritten...")
+    else:
+        print("No container was preserved, all files will be overwritten...")
     
     # Installation process
     cli.install(name)
