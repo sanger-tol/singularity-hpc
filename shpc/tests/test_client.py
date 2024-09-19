@@ -235,11 +235,11 @@ def test_reinstall_all_software(tmp_path, module_sys, module_file, container_tec
 
     # Install two different software
     client.install("quay.io/biocontainers/samtools:1.20--h50ea8bc_0")
-    client.install("quay.io/biocontainers/bwa: 0.7.18--he4a0461_0")
+    client.install("quay.io/biocontainers/bwa:0.7.18--he4a0461_0")
 
     # Install both software to a view
     client.view_install("default", "quay.io/biocontainers/samtools:1.20--h50ea8bc_0")
-    client.view_install("default", "quay.io/biocontainers/bwa: 0.7.18--he4a0461_0")
+    client.view_install("default", "quay.io/biocontainers/bwa:0.7.18--he4a0461_0")
 
     # Verify the existence of their containers
     container_samtools_dir = os.path.join(client.settings.container_base, "quay.io/biocontainers/samtools", "1.20--h50ea8bc_0")
