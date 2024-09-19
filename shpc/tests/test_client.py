@@ -60,6 +60,235 @@ def test_install_get(tmp_path, module_sys, module_file, container_tech, remote):
 
 
 @pytest.mark.parametrize(
+    "module_sys,module_file,container_tech,remote,update_containers",
+    [
+        ("lmod", "module.lua", "singularity", False, False),
+        ("lmod", "module.lua", "podman", False, False),
+        ("tcl", "module.tcl", "singularity", False, False),
+        ("tcl", "module.tcl", "podman", False, False),
+        ("lmod", "module.lua", "singularity", True, False),
+        ("lmod", "module.lua", "podman", True, False),
+        ("tcl", "module.tcl", "singularity", True, False),
+        ("tcl", "module.tcl", "podman", True, False),
+        ("lmod", "module.lua", "singularity", False, True),
+        ("lmod", "module.lua", "podman", False, True),
+        ("tcl", "module.tcl", "singularity", False, True),
+        ("tcl", "module.tcl", "podman", False, True),
+        ("lmod", "module.lua", "singularity", True, True),
+        ("lmod", "module.lua", "podman", True, True),
+        ("tcl", "module.tcl", "singularity", True, True),
+        ("tcl", "module.tcl", "podman", True, True),
+    ],
+)
+
+def test_reinstall_specific_software_version(tmp_path, module_sys, module_file, container_tech, remote, update_containers):
+    """
+    Test reinstalling a specific version of a software.
+    """
+    client = init_client(str(tmp_path), module_sys, container_tech, remote)
+
+    # Install a specific version of a software
+    client.install("python:3.9.2-alpine")
+
+    # Install the specific version to a view
+    client.view_install("default", "python:3.9.2-alpine")
+
+    # Verify its container's existence
+    container_dir = os.path.join(client.settings.container_base, "python", "3.9.2-alpine")
+    assert os.path.exists(container_dir)
+
+    # Get modification time of its container before reinstall
+    container_mtime_before = os.path.getmtime(container_dir)
+
+    # Reinstall the specific version
+    client.reinstall("python:3.9.2-alpine", update_containers=update_containers)
+
+    # Verify that it was reinstalled
+    module_dir = os.path.join(client.settings.module_base, "python", "3.9.2-alpine")
+    assert os.path.exists(module_dir)
+
+    # Verify that its module files were reinstalled
+    module_file_path = os.path.join(module_dir, module_file)
+    assert os.path.exists(module_file_path)
+
+    # Get modification time of the container after reinstall
+    container_mtime_after = os.path.getmtime(container_dir)
+
+    #Verify that its container was preserved or updated depending on update_container flag
+    if update_containers:
+        assert container_mtime_after > container_mtime_before, "Container should be updated when update_containers=True."
+    else:
+        assert container_mtime_after == container_mtime_before, "Container should be preserved when update_containers=False."
+
+    # Check if it was restored to its views
+    for view_name in client.views.keys():
+        assert client.views[view_name].exists(module_dir), f"Software was not restored to view: {view_name}"
+
+
+@pytest.mark.parametrize(
+    "module_sys,module_file,container_tech,remote,update_containers",
+    [
+        ("lmod", "module.lua", "singularity", False, False),
+        ("lmod", "module.lua", "podman", False, False),
+        ("tcl", "module.tcl", "singularity", False, False),
+        ("tcl", "module.tcl", "podman", False, False),
+        ("lmod", "module.lua", "singularity", True, False),
+        ("lmod", "module.lua", "podman", True, False),
+        ("tcl", "module.tcl", "singularity", True, False),
+        ("tcl", "module.tcl", "podman", True, False),
+        ("lmod", "module.lua", "singularity", False, True),
+        ("lmod", "module.lua", "podman", False, True),
+        ("tcl", "module.tcl", "singularity", False, True),
+        ("tcl", "module.tcl", "podman", False, True),
+        ("lmod", "module.lua", "singularity", True, True),
+        ("lmod", "module.lua", "podman", True, True),
+        ("tcl", "module.tcl", "singularity", True, True),
+        ("tcl", "module.tcl", "podman", True, True),
+    ],
+)
+
+def test_reinstall_all_software_versions(tmp_path, module_sys, module_file, container_tech, remote, update_containers):
+    """
+    Test reinstalling all versions of a specific software.
+    """
+    client = init_client(str(tmp_path), module_sys, container_tech, remote)
+
+    # Install two versions of a software
+    client.install("python:3.9.2-alpine")
+    client.install("python:3.9.4-alpine")
+
+    # Install both versions to a view
+    client.view_install("default", "python:3.9.2-alpine")
+    client.view_install("default", "python:3.9.4-alpine")
+
+    # Verify their container's existence
+    container_392_dir = os.path.join(client.settings.container_base, "python", "3.9.2-alpine")
+    container_394_dir = os.path.join(client.settings.container_base, "python", "3.9.4-alpine")
+    assert os.path.exists(container_392_dir)
+    assert os.path.exists(container_394_dir)
+
+    # Get modification time of their container before reinstall
+    container_392_mtime_before = os.path.getmtime(container_392_dir)
+    container_394_mtime_before = os.path.getmtime(container_394_dir)
+
+    # Reinstall all versions of the specific software
+    client.reinstall("python", update_containers=update_containers)
+
+    # Verify that both versions exist after reinstall
+    module_392_dir = os.path.join(client.settings.module_base, "python", "3.9.2-alpine")
+    module_394_dir = os.path.join(client.settings.module_base, "python", "3.9.4-alpine")
+    assert os.path.exists(module_392_dir)
+    assert os.path.exists(module_394_dir)
+
+    # Verify if their module files were reinstalled
+    module_392_file_path = os.path.join(module_392_dir, module_file)
+    module_394_file_path = os.path.join(module_394_dir, module_file)
+    assert os.path.exists(module_392_file_path)
+    assert os.path.exists(module_394_file_path)
+
+    # Get modification time of their container after reinstall
+    container_392_mtime_after = os.path.getmtime(container_392_dir)
+    container_394_mtime_after = os.path.getmtime(container_394_dir)
+
+    # Verify that their containers were preserved or updated depending on update_containers
+    if update_containers:
+        assert container_392_mtime_after > container_392_mtime_before, "Container should be updated when update_containers=True."
+        assert container_394_mtime_after > container_394_mtime_before, "Container should be updated when update_containers=True."
+    else:    
+        assert container_392_mtime_after == container_392_mtime_before, "Container should be preserved when update_containers=False."
+        assert container_394_mtime_after == container_394_mtime_before, "Container should be preserved when update_containers=False."
+
+    # Check if both versions were restored to their views
+    for view_name in client.views.keys():
+        assert client.views[view_name].exists(module_392_dir), f"Software was not restored to view: {view_name}"
+    for view_name in client.views.keys():
+        assert client.views[view_name].exists(module_394_dir), f"Software was not restored to view: {view_name}"
+
+
+@pytest.mark.parametrize(
+    "module_sys,module_file,container_tech,remote,update_containers",
+    [
+        ("lmod", "module.lua", "singularity", False, False),
+        ("lmod", "module.lua", "podman", False, False),
+        ("tcl", "module.tcl", "singularity", False, False),
+        ("tcl", "module.tcl", "podman", False, False),
+        ("lmod", "module.lua", "singularity", True, False),
+        ("lmod", "module.lua", "podman", True, False),
+        ("tcl", "module.tcl", "singularity", True, False),
+        ("tcl", "module.tcl", "podman", True, False),
+        ("lmod", "module.lua", "singularity", False, True),
+        ("lmod", "module.lua", "podman", False, True),
+        ("tcl", "module.tcl", "singularity", False, True),
+        ("tcl", "module.tcl", "podman", False, True),
+        ("lmod", "module.lua", "singularity", True, True),
+        ("lmod", "module.lua", "podman", True, True),
+        ("tcl", "module.tcl", "singularity", True, True),
+        ("tcl", "module.tcl", "podman", True, True),
+    ],
+)
+
+def test_reinstall_all_software(tmp_path, module_sys, module_file, container_tech, remote, update_containers):
+    """
+    Test reinstalling all installed modules.
+    """
+    client = init_client(str(tmp_path), module_sys, container_tech, remote, update_containers)
+
+    # Install two different software
+    client.install("python:3.9.2-alpine")
+    client.install("nginx:alpine3.18")
+
+    # Install both software to a view
+    client.view_install("default", "python:3.9.2-alpine")
+    client.view_install("default", "nginx:alpine3.18")
+
+    # Verify the existence of their containers
+    container_python_dir = os.path.join(client.settings.container_base, "python", "3.9.2-alpine")
+    container_nginx_dir = os.path.join(client.settings.container_base, "nginx", "alpine3.18")
+    assert os.path.exists(container_python_dir)
+    assert os.path.exists(container_nginx_dir)
+
+    # Get modification time of their container before reinstall
+    container_python_mtime_before = os.path.getmtime(container_python_dir)
+    container_nginx_mtime_before = os.path.getmtime(container_nginx_dir)
+
+    # Reinstall all software
+    installed_software = client.list(return_modules=True)
+    for software in installed_software.keys():
+        client.reinstall(software, update_containers=update_containers)
+
+    # Verify that both modules exist after reinstall
+    module_python_dir = os.path.join(client.settings.module_base, "python", "3.9.2-alpine")
+    module_nginx_dir = os.path.join(client.settings.module_base, "nginx", "alpine3.18")
+    assert os.path.exists(module_python_dir)
+    assert os.path.exists(module_nginx_dir)
+
+    # Verify if their module files were reinstalled
+    module_python_file_path = os.path.join(module_python_dir, module_file)
+    module_nginx_file_path = os.path.join(module_nginx_dir, module_file)
+    assert os.path.exists(module_python_file_path)
+    assert os.path.exists(module_nginx_file_path)
+
+    # Get modification time of their container after reinstall
+    container_python_mtime_after = os.path.getmtime(container_python_dir)
+    container_nginx_mtime_after = os.path.getmtime(container_nginx_dir)
+
+    # Verify that their containers were preserved or updated depending on update_containers
+    if update_containers:
+        assert container_python_mtime_after > container_python_mtime_before, "Container should be updated when update_containers=True."
+        assert container_nginx_mtime_after > container_nginx_mtime_before, "Container should be updated when update_containers=True."
+        
+    else:    
+        assert container_python_mtime_after == container_python_mtime_before, "Container should be preserved when update_containers=False."
+        assert container_nginx_mtime_after == container_nginx_mtime_before, "Container should be preserved when update_containers=False."
+
+    # Check if both software were restored to their views
+    for view_name in client.views.keys():
+        assert client.views[view_name].exists(module_python_dir), f"Software was not restored to view: {view_name}"
+    for view_name in client.views.keys():
+        assert client.views[view_name].exists(module_nginx_dir), f"Software was not restored to view: {view_name}"
+
+
+@pytest.mark.parametrize(
     "module_sys,module_file,remote",
     [
         ("lmod", "module.lua", True),

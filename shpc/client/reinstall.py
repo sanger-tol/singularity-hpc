@@ -20,8 +20,6 @@ def main(args, parser, extra, subparser):
     # Update config settings on the fly
     cli.settings.update_params(args.config_params)
 
-    
-
     if args.all:
         # Check if the user typed an invalid argument combination
         if args.reinstall_recipe:
@@ -36,7 +34,7 @@ def main(args, parser, extra, subparser):
         print("Reinstalling all installed software...")
         for software in installed_software.keys():
             reinstall(software, cli, args, update_containers=args.update_containers)
-        logger.info("All softwares reinstalled.")
+        logger.info("All software reinstalled.")
 
     else:
         # Reinstall a specific software
@@ -107,6 +105,7 @@ def reinstall_version(name, cli, args, update_containers):
     cli.install(name)
 
     # Restore the software to the captured views
+    print(f"Restoring {name} to the views it was uninstalled from during reinstallation")
     for view_name in views_with_module:
         cli.view_install(view_name, name)
         logger.info(f"Restored {name} to view: {view_name}")
