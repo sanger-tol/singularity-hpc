@@ -85,7 +85,7 @@ def test_reinstall_specific_software_version(tmp_path, module_sys, module_file, 
     """
     Test reinstalling a specific version of a software.
     """
-    client = init_client(str(tmp_path), module_sys, container_tech, remote=remote, update_containers=update_containers)
+    client = init_client(str(tmp_path), module_sys, container_tech, remote=remote)
 
     # Install a specific version of a software
     client.install("quay.io/biocontainers/samtools:1.20--h50ea8bc_0")
@@ -151,7 +151,7 @@ def test_reinstall_all_software_versions(tmp_path, module_sys, module_file, cont
     """
     Test reinstalling all versions of a specific software.
     """
-    client = init_client(str(tmp_path), module_sys, container_tech, remote=remote, update_containers=update_containers)
+    client = init_client(str(tmp_path), module_sys, container_tech, remote=remote)
 
     # Install two versions of a software
     client.install("quay.io/biocontainers/samtools:1.20--h50ea8bc_0")
@@ -231,7 +231,7 @@ def test_reinstall_all_software(tmp_path, module_sys, module_file, container_tec
     """
     Test reinstalling all installed software.
     """
-    client = init_client(str(tmp_path), module_sys, container_tech, remote=remote, update_containers=update_containers)
+    client = init_client(str(tmp_path), module_sys, container_tech, remote=remote)
 
     # Install two different software
     client.install("quay.io/biocontainers/samtools:1.20--h50ea8bc_0")
