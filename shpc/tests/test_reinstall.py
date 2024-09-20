@@ -226,7 +226,7 @@ def test_reinstall_all_software(tmp_path, module_sys, module_file, container_tec
 
     # Verify the existence of their containers
     container_samtools_dir = os.path.join(client.settings.container_base, "quay.io/biocontainers/samtools", "1.20--h50ea8bc_0")
-    container_bwa_dir = os.path.join(client.settings.container_base, "quay.io/biocontainers/bwa", " 0.7.18--he4a0461_0")
+    container_bwa_dir = os.path.join(client.settings.container_base, "quay.io/biocontainers/bwa", "0.7.18--he4a0461_0")
     assert os.path.exists(container_samtools_dir)
     assert os.path.exists(container_bwa_dir)
 
@@ -241,7 +241,7 @@ def test_reinstall_all_software(tmp_path, module_sys, module_file, container_tec
 
     # Verify that both modules exist after reinstall
     module_samtools_dir = os.path.join(client.settings.module_base, "quay.io/biocontainers/samtools", "1.20--h50ea8bc_0")
-    module_bwa_dir = os.path.join(client.settings.module_base, "quay.io/biocontainers/bwa", " 0.7.18--he4a0461_0")
+    module_bwa_dir = os.path.join(client.settings.module_base, "quay.io/biocontainers/bwa", "0.7.18--he4a0461_0")
     assert os.path.exists(module_samtools_dir)
     assert os.path.exists(module_bwa_dir)
 

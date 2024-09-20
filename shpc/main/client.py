@@ -61,6 +61,12 @@ class Client:
         Install must be implemented by the subclass (e.g., lmod)
         """
         raise NotImplementedError
+    
+    def reinstall(self, name, update_containers=False):
+        """
+        Reinstall an installed software
+        """
+        raise NotImplementedError
 
     def uninstall(self, name, tag=None):
         """
