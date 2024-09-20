@@ -2,6 +2,7 @@ import os
 import pytest
 from .helpers import init_client
 import shpc.main.modules.views as views
+import shpc.client.reinstall as client_reinstall
 
 @pytest.mark.parametrize(
     "module_sys,module_file,container_tech,remote,update_containers",
@@ -58,7 +59,7 @@ def test_reinstall_specific_software_version(tmp_path, module_sys, module_file, 
     container_mtime_before = os.path.getmtime(container_dir)
 
     # Reinstall the specific version
-    client.reinstall("quay.io/biocontainers/samtools:1.20--h50ea8bc_0", update_containers=update_containers)
+    client_reinstall.reinstall("quay.io/biocontainers/samtools:1.20--h50ea8bc_0", update_containers=update_containers)
 
     # Verify that it was reinstalled
     module_dir = os.path.join(client.settings.module_base, "quay.io/biocontainers/samtools", "1.20--h50ea8bc_0")
@@ -142,7 +143,7 @@ def test_reinstall_all_software_versions(tmp_path, module_sys, module_file, cont
     container_1_mtime_before = os.path.getmtime(container_1_dir)
 
     # Reinstall all versions of the specific software
-    client.reinstall("quay.io/biocontainers/samtools", update_containers=update_containers)
+    client_reinstall.reinstall("quay.io/biocontainers/samtools", update_containers=update_containers)
 
     # Verify that both versions exist after reinstall
     module_0_dir = os.path.join(client.settings.module_base, "quay.io/biocontainers/samtools", "1.20--h50ea8bc_0")
@@ -237,7 +238,7 @@ def test_reinstall_all_software(tmp_path, module_sys, module_file, container_tec
     # Reinstall all software
     installed_software = client.list(return_modules=True)
     for software in installed_software.keys():
-        client.reinstall(software, update_containers=update_containers)
+        client_reinstall.reinstall(software, update_containers=update_containers)
 
     # Verify that both modules exist after reinstall
     module_samtools_dir = os.path.join(client.settings.module_base, "quay.io/biocontainers/samtools", "1.20--h50ea8bc_0")
