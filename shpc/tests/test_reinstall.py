@@ -36,19 +36,19 @@ def test_reinstall_specific_software_version(tmp_path, module_sys, module_file, 
 
     # Create the default view if it doesn't exist
     view_handler = views.ViewsHandler(settings_file=client.settings.settings_file, module_sys=module_sys)
-    assert "default" not in client.views
-    view_handler.create("default")
+    assert "mpi" not in client.views
+    view_handler.create("mpi")
     client.detect_views()
-    assert "default" in client.views
-    view = client.views["default"]
+    assert "mpi" in client.views
+    view = client.views["mpi"]
     assert view.path == os.path.join(tmp_path, "views", "mpi") and os.path.exists(view.path)
     assert os.path.exists(view.config_path)
-    assert view._config["view"]["name"] == "default"
+    assert view._config["view"]["name"] == "mpi"
     assert not view._config["view"]["modules"]
     assert not view._config["view"]["system_modules"]
 
     # Install the specific version to a view
-    client.view_install("default", "quay.io/biocontainers/samtools:1.20--h50ea8bc_0")
+    client.view_install("mpi", "quay.io/biocontainers/samtools:1.20--h50ea8bc_0")
 
     # Verify its container's existence
     container_dir = os.path.join(client.settings.container_base, "quay.io/biocontainers/samtools", "1.20--h50ea8bc_0")
@@ -116,20 +116,20 @@ def test_reinstall_all_software_versions(tmp_path, module_sys, module_file, cont
 
     # Create the default view if it doesn't exist
     view_handler = views.ViewsHandler(settings_file=client.settings.settings_file, module_sys=module_sys)
-    assert "default" not in client.views
-    view_handler.create("default")
+    assert "mpi" not in client.views
+    view_handler.create("mpi")
     client.detect_views()
-    assert "default" in client.views
-    view = client.views["default"]
+    assert "mpi" in client.views
+    view = client.views["mpi"]
     assert view.path == os.path.join(tmp_path, "views", "mpi") and os.path.exists(view.path)
     assert os.path.exists(view.config_path)
-    assert view._config["view"]["name"] == "default"
+    assert view._config["view"]["name"] == "mpi"
     assert not view._config["view"]["modules"]
     assert not view._config["view"]["system_modules"]
 
     # Install both versions to a view
-    client.view_install("default", "quay.io/biocontainers/samtools:1.20--h50ea8bc_0")
-    client.view_install("default", "quay.io/biocontainers/samtools:1.20--h50ea8bc_1")
+    client.view_install("mpi", "quay.io/biocontainers/samtools:1.20--h50ea8bc_0")
+    client.view_install("mpi", "quay.io/biocontainers/samtools:1.20--h50ea8bc_1")
 
     # Verify their container's existence
     container_0_dir = os.path.join(client.settings.container_base, "quay.io/biocontainers/samtools", "1.20--h50ea8bc_0")
@@ -209,20 +209,20 @@ def test_reinstall_all_software(tmp_path, module_sys, module_file, container_tec
 
      # Create the default view if it doesn't exist
     view_handler = views.ViewsHandler(settings_file=client.settings.settings_file, module_sys=module_sys)
-    assert "default" not in client.views
-    view_handler.create("default")
+    assert "mpi" not in client.views
+    view_handler.create("mpi")
     client.detect_views()
-    assert "default" in client.views
-    view = client.views["default"]
+    assert "mpi" in client.views
+    view = client.views["mpi"]
     assert view.path == os.path.join(tmp_path, "views", "mpi") and os.path.exists(view.path)
     assert os.path.exists(view.config_path)
-    assert view._config["view"]["name"] == "default"
+    assert view._config["view"]["name"] == "mpi"
     assert not view._config["view"]["modules"]
     assert not view._config["view"]["system_modules"]
 
     # Install both software to a view
-    client.view_install("default", "quay.io/biocontainers/samtools:1.20--h50ea8bc_0")
-    client.view_install("default", "quay.io/biocontainers/bwa:0.7.18--he4a0461_0")
+    client.view_install("mpi", "quay.io/biocontainers/samtools:1.20--h50ea8bc_0")
+    client.view_install("mpi", "quay.io/biocontainers/bwa:0.7.18--he4a0461_0")
 
     # Verify the existence of their containers
     container_samtools_dir = os.path.join(client.settings.container_base, "quay.io/biocontainers/samtools", "1.20--h50ea8bc_0")
