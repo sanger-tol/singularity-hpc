@@ -35,9 +35,8 @@ def test_reinstall_specific_software_version(tmp_path, module_sys, module_file, 
     client.install("quay.io/biocontainers/samtools:1.20--h50ea8bc_0")
 
     # Create the default view if it doesn't exist
-    if "default" not in client.views:
-        view_handler = views.ViewsHandler(settings_file=client.settings.settings_file, module_sys=module_sys)
-        view_handler.create("default")
+    view_handler = views.ViewsHandler(settings_file=client.settings.settings_file, module_sys=module_sys)
+    view_handler.create("default")
 
     # Install the specific version to a view
     client.view_install("default", "quay.io/biocontainers/samtools:1.20--h50ea8bc_0")
@@ -107,9 +106,8 @@ def test_reinstall_all_software_versions(tmp_path, module_sys, module_file, cont
     client.install("quay.io/biocontainers/samtools:1.20--h50ea8bc_1")
 
     # Create the default view if it doesn't exist
-    if "default" not in client.views:
-        view_handler = views.ViewsHandler(settings_file=client.settings.settings_file, module_sys=module_sys)
-        view_handler.create("default")
+    view_handler = views.ViewsHandler(settings_file=client.settings.settings_file, module_sys=module_sys)
+    view_handler.create("default")
 
     # Install both versions to a view
     client.view_install("default", "quay.io/biocontainers/samtools:1.20--h50ea8bc_0")
@@ -192,9 +190,8 @@ def test_reinstall_all_software(tmp_path, module_sys, module_file, container_tec
     client.install("quay.io/biocontainers/bwa:0.7.18--he4a0461_0")
 
     # Create the default view if it doesn't exist
-    if "default" not in client.views:
-        view_handler = views.ViewsHandler(settings_file=client.settings.settings_file, module_sys=module_sys)
-        view_handler.create("default")
+    view_handler = views.ViewsHandler(settings_file=client.settings.settings_file, module_sys=module_sys)
+    view_handler.create("default")
 
     # Install both software to a view
     client.view_install("default", "quay.io/biocontainers/samtools:1.20--h50ea8bc_0")
