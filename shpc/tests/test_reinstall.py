@@ -36,7 +36,16 @@ def test_reinstall_specific_software_version(tmp_path, module_sys, module_file, 
 
     # Create the default view if it doesn't exist
     view_handler = views.ViewsHandler(settings_file=client.settings.settings_file, module_sys=module_sys)
+    assert "default" not in client.views
     view_handler.create("default")
+    client.detect_views()
+    assert "default" in client.views
+    view = client.views["default"]
+    assert view.path == os.path.join(tmp_path, "views", "mpi") and os.path.exists(view.path)
+    assert os.path.exists(view.config_path)
+    assert view._config["view"]["name"] == "default"
+    assert not view._config["view"]["modules"]
+    assert not view._config["view"]["system_modules"]
 
     # Install the specific version to a view
     client.view_install("default", "quay.io/biocontainers/samtools:1.20--h50ea8bc_0")
@@ -107,7 +116,16 @@ def test_reinstall_all_software_versions(tmp_path, module_sys, module_file, cont
 
     # Create the default view if it doesn't exist
     view_handler = views.ViewsHandler(settings_file=client.settings.settings_file, module_sys=module_sys)
+    assert "default" not in client.views
     view_handler.create("default")
+    client.detect_views()
+    assert "default" in client.views
+    view = client.views["default"]
+    assert view.path == os.path.join(tmp_path, "views", "mpi") and os.path.exists(view.path)
+    assert os.path.exists(view.config_path)
+    assert view._config["view"]["name"] == "default"
+    assert not view._config["view"]["modules"]
+    assert not view._config["view"]["system_modules"]
 
     # Install both versions to a view
     client.view_install("default", "quay.io/biocontainers/samtools:1.20--h50ea8bc_0")
@@ -189,9 +207,18 @@ def test_reinstall_all_software(tmp_path, module_sys, module_file, container_tec
     client.install("quay.io/biocontainers/samtools:1.20--h50ea8bc_0")
     client.install("quay.io/biocontainers/bwa:0.7.18--he4a0461_0")
 
-    # Create the default view if it doesn't exist
+     # Create the default view if it doesn't exist
     view_handler = views.ViewsHandler(settings_file=client.settings.settings_file, module_sys=module_sys)
+    assert "default" not in client.views
     view_handler.create("default")
+    client.detect_views()
+    assert "default" in client.views
+    view = client.views["default"]
+    assert view.path == os.path.join(tmp_path, "views", "mpi") and os.path.exists(view.path)
+    assert os.path.exists(view.config_path)
+    assert view._config["view"]["name"] == "default"
+    assert not view._config["view"]["modules"]
+    assert not view._config["view"]["system_modules"]
 
     # Install both software to a view
     client.view_install("default", "quay.io/biocontainers/samtools:1.20--h50ea8bc_0")
