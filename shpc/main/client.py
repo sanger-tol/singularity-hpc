@@ -67,7 +67,6 @@ class Client:
         Reinstall an installed software
         """
         from shpc.client.reinstall import reinstall as reinstall
-
         cli = self  
         args = {}  
         reinstall(name, cli, args, update_containers=update_containers)
