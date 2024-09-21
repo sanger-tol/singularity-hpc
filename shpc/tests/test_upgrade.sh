@@ -1,3 +1,7 @@
+__author__ = "Ausbeth Aguguo"
+__copyright__ = "Copyright 2021-2024, Ausbeth Aguguo"
+__license__ = "MPL 2.0"
+
 #!/bin/bash
 
 echo

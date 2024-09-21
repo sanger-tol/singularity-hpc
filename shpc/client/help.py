@@ -245,7 +245,7 @@ show_description = """Show the config for a registry entry
 
 upgrade_description = """Upgrade software to the latest version.
 
-  # Upgrade a specific software to its latest version and give option to uninstall older versions or not.
+  # Upgrade a software to its latest version and give option to uninstall older versions or not.
   # Do not include the version in the command
   $ shpc upgrade quay.io/biocontainers/samtools
 
@@ -255,7 +255,7 @@ upgrade_description = """Upgrade software to the latest version.
   $ shpc upgrade -a    
 
   # Valid arguement combinations:
-  # Perform dry-run on a specific software to check if the latest is installed or not without upgrading it.
+  # Perform dry-run on a software to check if the latest is installed or not without upgrading it.
   $ shpc upgrade quay.io/biocontainers/samtools --dry-run
       OR
   $ shpc upgrade quay.io/biocontainers/samtools -d

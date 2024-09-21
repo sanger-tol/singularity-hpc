@@ -109,42 +109,13 @@ def upgrade(name, cli, args, dry_run=False):
     """
     # Add namespace 
     name = cli.add_namespace(name)
-
-    def get_latest_version(config):
-        '''
-        Retrieve the latest version tag from the container configuration.
-        '''
-        latest_version_info = config.get('latest')
-        if not latest_version_info:
-            logger.exit(f"No latest version found for {name}")
-        
-        # Extract the latest version tag
-        latest_version_tag = list(latest_version_info.keys())[0]
-        return latest_version_tag
-
-    def get_installed_versions(recipe):
-        '''
-        Retrieve the installed versions of the recipe from the user's software list
-        '''
-        try:
-            result = subprocess.run(
-                ['shpc', 'list', recipe],
-                capture_output=True,
-                text=True,
-                check=True
-            )
-            output = result.stdout
-            return output
-        except subprocess.CalledProcessError as e:
-            logger.error(f"Failed to execute shpc list command: {e}")
-            return None
     
     # Load the container configuration for the specified recipe
     config = cli._load_container(name)
 
     #Store the installed versions and the latest version tag
     installed_versions = get_installed_versions(name)
-    latest_version_tag = get_latest_version(config)
+    latest_version_tag = get_latest_version(name, config)
 
     # Compare the latest version with the user's installed version
     if latest_version_tag in installed_versions:
@@ -175,5 +146,39 @@ def upgrade(name, cli, args, dry_run=False):
             for view_name in views_with_module:
                 cli.view_install(view_name, name)
                 logger.info(f"Installed the latest version of {name} to view: {view_name}")
+
+
+def get_installed_versions(recipe):
+        '''
+        Retrieve the installed versions of the recipe from the user's software list
+        '''
+        try:
+            result = subprocess.run(
+                ['shpc', 'list', recipe],
+                capture_output=True,
+                text=True,
+                check=True
+            )
+            output = result.stdout
+            return output
+        except subprocess.CalledProcessError as e:
+            logger.error(f"Failed to execute shpc list command: {e}")
+            return None
+
+
+def get_latest_version(name, config):
+        '''
+        Retrieve the latest version tag from the container configuration.
+        '''
+        latest_version_info = config.get('latest')
+        if not latest_version_info:
+            logger.exit(f"No latest version found for {name}")
+        
+        # Extract the latest version tag
+        latest_version_tag = list(latest_version_info.keys())[0]
+        return latest_version_tag
+
+
+
         
 
