@@ -22,10 +22,6 @@ def main(args, parser, extra, subparser):
     if not installed_software:
         logger.exit("Cannot perform shpc upgrade because you currently do not have any software installed.", 0)
 
-    # Avoid invalid argument combination
-    if args.upgrade_recipe and args.upgrade_all and args.dry_run:
-        logger.exit("Cannot use '--all', '--dry-run', and a specific recipe together.\nFor upgrade help description, please use shpc upgrade --help or shpc upgrade -h.")
-
     # Upgrade a specific installed software 
     if args.upgrade_recipe:
         # Check if the provided recipe is known in any registry
@@ -79,6 +75,10 @@ def main(args, parser, extra, subparser):
                 logger.info("All your software are currently up to date.")
             else:
                 logger.info(f"You have a total of {num_outdated} outdated software.")
+                msg = "Do you want a simple list of only your outdated software?"
+                if utils.confirm_action(msg, force=args.force):
+                    for software in outdated_software:
+                        print(software)
 
         # Upgrade all software
         else:
@@ -97,22 +97,6 @@ def main(args, parser, extra, subparser):
                 for software in outdated_software:
                     upgrade(software, cli, args)
                 logger.info("All your software are now up to date.")
-
-    # Display all software available for upgrade from the user's software list
-    elif args.dry_run:
-        print("Checking your list to preview outdated software...")
-        upgrades_available = {}
-        for software in installed_software.keys():
-            upgrade_info = upgrade(software, cli, args, dry_run=True)
-            if upgrade_info:
-                upgrades_available.update(upgrade_info)
-        # Provide a report on the dry-run
-        if upgrades_available:
-            logger.info("These are the latest versions available for your outdated software:")
-            for software, version in upgrades_available.items():
-                print(f"{software}:{version}")
-        else:
-            logger.info("Nothing to preview. All your software are up to date.")
 
     # Warn the user for not providing an argument
     else:
