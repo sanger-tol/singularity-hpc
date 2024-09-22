@@ -62,14 +62,14 @@ class Client:
         """
         raise NotImplementedError
     
-    def upgrade(self, name, dry_run=False):
+    def upgrade(self, name, dry_run=False, force=False):
         """
         Upgrade an outdated software
         """
         from shpc.client.upgrade import upgrade as upgrade
         cli = self  
         args = {}  
-        upgrade(name, cli, args, dry_run=dry_run)
+        upgrade(name, cli, args, dry_run=dry_run, force=force)
 
     def uninstall(self, name, tag=None):
         """

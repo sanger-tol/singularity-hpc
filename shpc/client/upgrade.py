@@ -51,7 +51,7 @@ def main(args, parser, extra, subparser):
 
         # Upgade the software
         else:
-            upgrade(args.upgrade_recipe, cli, args)
+            upgrade(args.upgrade_recipe, cli, args, dry_run=False, force=args.force)
 
     # Upgrade all installed software
     elif args.upgrade_all:
@@ -76,7 +76,7 @@ def main(args, parser, extra, subparser):
             else:
                 logger.info(f"You have a total of {num_outdated} outdated software.")
                 msg = "Do you want a simple list of only your outdated software?"
-                if utils.confirm_action(msg, force=args.force):
+                if utils.confirm_action(msg, force=False):
                     logger.info("These are your outdated software:")
                     for software in outdated_software:
                         print(software)
@@ -96,7 +96,7 @@ def main(args, parser, extra, subparser):
             else:
                 logger.info(f"Found {num_outdated} outdated software")
                 for software in outdated_software:
-                    upgrade(software, cli, args)
+                    upgrade(software, cli, args, dry_run=False, force=args.force)
                 logger.info("All your software are now up to date.")
 
     # Warn the user for not providing an argument
@@ -104,7 +104,7 @@ def main(args, parser, extra, subparser):
         subparser.error("Incomplete command. The following arguements are required: upgrade_recipe, --all, or -h for more details ")
 
 
-def upgrade(name, cli, args, dry_run=False):
+def upgrade(name, cli, args, dry_run=False, force=False):
     """
     Upgrade a software to its latest version. Or preview available upgrades from the user's software list
     """
@@ -135,7 +135,7 @@ def upgrade(name, cli, args, dry_run=False):
                 views_with_module.add(view_name)
 
         # Ask if the user wants to unintall old versions
-        if not cli.uninstall(name, force=args.force):
+        if not cli.uninstall(name, force=force):
             logger.info("Old versions of " + name + " were preserved")
         
         # Install the latest version
@@ -143,7 +143,7 @@ def upgrade(name, cli, args, dry_run=False):
 
         # Install the latest version to views where the outdated version was found
         msg = f"Do you also want to install the latest version of {name} to the view(s) of the previous version(s)?"
-        if utils.confirm_action(msg, force=args.force):
+        if utils.confirm_action(msg, force=force):
             for view_name in views_with_module:
                 cli.view_install(view_name, name)
                 logger.info(f"Installed the latest version of {name} to view: {view_name}")

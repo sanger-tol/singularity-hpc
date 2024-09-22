@@ -77,7 +77,7 @@ def test_upgrade_software(mock_confirm_action, tmp_path, module_sys, module_file
     config = client._load_container(name)
 
     # Upgrade the software to its latest version
-    client.upgrade(name=name, dry_run=dry_run)
+    client.upgrade(name=name, dry_run=dry_run, force=False)
 
     # Get the latest version tag from the software's configuration
     latest_version = glv(name, config)
