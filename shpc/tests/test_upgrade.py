@@ -54,7 +54,7 @@ def test_upgrade_software(mock_confirm_action, tmp_path, module_sys, module_file
     client = init_client(str(tmp_path), module_sys, container_tech, remote=remote)
 
     # Install an outdated version of a software
-    client.install("quay.io/biocontainers/samtools:1.18--h50ea8bc_0")
+    client.install("quay.io/biocontainers/samtools:1.18--h50ea8bc_1") 
 
     # Create the default view if it doesn't exist
     view_handler = views.ViewsHandler(settings_file=client.settings.settings_file, module_sys=module_sys)
@@ -70,7 +70,7 @@ def test_upgrade_software(mock_confirm_action, tmp_path, module_sys, module_file
     assert not view._config["view"]["system_modules"]
 
     # Install the software to the view
-    client.view_install("mpi", "quay.io/biocontainers/samtools:1.18--h50ea8bc_0")
+    client.view_install("mpi", "quay.io/biocontainers/samtools:1.18--h50ea8bc_1")
 
     # Load the container configuration for the software
     name = client.add_namespace("quay.io/biocontainers/samtools")
@@ -96,14 +96,14 @@ def test_upgrade_software(mock_confirm_action, tmp_path, module_sys, module_file
 
         if uninstall_prompt:
             # Check the older version's module directory
-            module_dir_old = os.path.join(client.settings.module_base, "quay.io/biocontainers/samtools", "1.18--h50ea8bc_0")
+            module_dir_old = os.path.join(client.settings.module_base, "quay.io/biocontainers/samtools", "1.18--h50ea8bc_1")
             assert not os.path.exists(module_dir_old), "Older version should be uninstalled"
             # Verify that its module files were uninstalled
             module_file_path = os.path.join(module_dir_old, module_file)
             assert not os.path.exists(module_file_path), "Older version's module files should be uninstalled."
         else:
             # Check the older version's module directory
-            module_dir_old = os.path.join(client.settings.module_base, "quay.io/biocontainers/samtools", "1.18--h50ea8bc_0")
+            module_dir_old = os.path.join(client.settings.module_base, "quay.io/biocontainers/samtools", "1.18--h50ea8bc_1")
             assert os.path.exists(module_dir_old), "old version should not be uninstalled"
             # Verify that its module files were not uninstalled
             module_file_path = os.path.join(module_dir_old, module_file)
