@@ -92,6 +92,7 @@ def test_upgrade_software(mock_confirm_action, tmp_path, module_sys, module_file
         assert os.path.exists(module_dir), "Latest version should be installed."
         # Verify that its module files were installed
         module_file_path = os.path.join(module_dir, module_file)
+        print(f"Checking if module file exists: {module_file}")
         assert os.path.exists(module_file_path), "Latest version's module files should be installed."
 
         # Simulate user's choice for uninstalling older versions and installing latest version to the views of the older versions
