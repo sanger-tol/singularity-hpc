@@ -142,11 +142,12 @@ def upgrade(name, cli, args, dry_run=False, force=False):
         cli.install(name)
 
         # Install the latest version to views where the outdated version was found
-        msg = f"Do you also want to install the latest version of {name} to the view(s) of the previous version(s)?"
-        if utils.confirm_action(msg, force=force):
-            for view_name in views_with_module:
-                cli.view_install(view_name, name)
-                logger.info(f"Installed the latest version of {name} to view: {view_name}")
+        if views_with_module:
+            msg = f"Do you also want to install the latest version of {name} to the view(s) of the previous version(s)?"
+            if utils.confirm_action(msg, force=force):
+                for view_name in views_with_module:
+                    cli.view_install(view_name, name)
+                    logger.info(f"Installed the latest version of {name} to view: {view_name}")
 
 
 def get_installed_versions(recipe):
