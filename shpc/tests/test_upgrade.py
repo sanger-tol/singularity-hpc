@@ -81,11 +81,14 @@ def test_upgrade_software(mock_confirm_action, tmp_path, module_sys, module_file
 
     # Get the latest version tag from the software's configuration
     latest_version = glv(name, config)
+    print(f"Latest version expected: {latest_version}")
+
 
     # Verify if the latest version of the software was installed 
     if not dry_run:
         # Verify the module's directory exists
         module_dir = os.path.join(client.settings.module_base, "quay.io/biocontainers/samtools", latest_version)
+        print(f"Checking module directory: {module_dir}")
         assert os.path.exists(module_dir), "Latest version should be installed."
         # Verify that its module files were installed
         module_file_path = os.path.join(module_dir, module_file)
