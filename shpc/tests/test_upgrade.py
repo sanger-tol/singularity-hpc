@@ -46,7 +46,7 @@ from shpc.client.upgrade import  get_latest_version as glv
     ],
 )
 
-@mock.patch("shpc.client.utils.confirm_action")
+@mock.patch("shpc.utils.confirm_action")
 def test_upgrade_software(mock_confirm_action, tmp_path, module_sys, module_file, container_tech, remote, dry_run, uninstall_prompt, view_prompt):
     """
     Test upgrading a single software.
