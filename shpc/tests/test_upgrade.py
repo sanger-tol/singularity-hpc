@@ -72,12 +72,12 @@ def test_upgrade_software(mock_confirm_action, tmp_path, module_sys, module_file
     # Install the software to the view
     client.view_install("mpi", "quay.io/biocontainers/samtools:1.18--h50ea8bc_1")
 
+    # Upgrade the software to its latest version
+    client.upgrade("quay.io/biocontainers/samtools", dry_run=dry_run, force=False)
+
     # Load the container configuration for the software
     name = client.add_namespace("quay.io/biocontainers/samtools")
     config = client._load_container(name)
-
-    # Upgrade the software to its latest version
-    client.upgrade(name=name, dry_run=dry_run, force=True)
 
     # Get the latest version tag from the software's configuration
     latest_version = glv(name, config)
