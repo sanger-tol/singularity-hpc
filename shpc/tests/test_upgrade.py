@@ -81,12 +81,34 @@ def test_upgrade_software(mock_confirm_action, tmp_path, module_sys, module_file
 
     # Get the latest version tag from the software's configuration
     latest_version = glv(name, config)
+    # Debug: Print the expected latest version and module directory path
+    print(f"Expected latest version: {latest_version}")
+
+    module_dir = os.path.join(client.settings.module_base, "quay.io/biocontainers/samtools", latest_version)
+    print(f"Expected module directory path: {module_dir}")
+    
+    # Check if the directory exists
+    if not os.path.exists(module_dir):
+        print(f"Module directory for version {latest_version} does not exist.")
+    else:
+        print(f"Module directory for version {latest_version} exists.")
 
     # Verify if the latest version of the software was installed 
     if not dry_run:
+        # Debug: Check the actual contents of the module directory
+        if os.path.exists(module_dir):
+            print(f"Files in the module directory: {os.listdir(module_dir)}")
+        else:
+            print("Module directory does not exist. Installation might have failed.")
+
+        # Assertion to check if the directory exists
+        assert os.path.exists(module_dir), "Latest version should be installed."
+
+        '''
         # Verify the module's directory exists
         module_dir = os.path.join(client.settings.module_base, "quay.io/biocontainers/samtools", latest_version)
         assert os.path.exists(module_dir), "Latest version should be installed."
+        '''
         # Verify that its module files were installed
         module_file_path = os.path.join(module_dir, module_file)
         assert os.path.exists(module_file_path), "Latest version's module files should be installed."
