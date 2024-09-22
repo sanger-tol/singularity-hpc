@@ -77,6 +77,7 @@ def main(args, parser, extra, subparser):
                 logger.info(f"You have a total of {num_outdated} outdated software.")
                 msg = "Do you want a simple list of only your outdated software?"
                 if utils.confirm_action(msg, force=args.force):
+                    logger.info("These are your outdated software:")
                     for software in outdated_software:
                         print(software)
 
@@ -168,7 +169,8 @@ def get_installed_versions(recipe):
 
 def get_latest_version(name, config):
         '''
-        Retrieve the latest version tag from the container configuration.
+        Given an added namespace of a recipe and a loaded container configuration of that namespace, 
+        Retrieve the latest version tag.
         '''
         latest_version_info = config.get('latest')
         if not latest_version_info:
