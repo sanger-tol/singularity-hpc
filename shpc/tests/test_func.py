@@ -72,7 +72,7 @@ def test_upgrade(mock_confirm_action, tmp_path, module_sys, module_file, contain
     # Do not install the latest version to the existing view and ensure it was added not added to the  view 
     assert not client.views["mpi"].exists(module_dir), f"Upgraded software should not added to the view 'mpi'"
 
-'''
+
 def test_upgrade(tmp_path, module_sys, module_file, container_tech,remote):
     client = init_client(str(tmp_path), module_sys, container_tech,remote=remote)
 
@@ -134,4 +134,4 @@ def test_upgrade_with_latest_already_installed(tmp_path, module_sys, module_file
     module_dir_mtime_after = os.path.getmtime(module_dir)
 
     assert module_dir_mtime_after == module_dir_mtime_before, "Upgrade should not occur if latest is installed already."
-''' 
+
