@@ -13,21 +13,21 @@ from shpc.client.upgrade import  get_latest_version as glv
     "module_sys, module_file, container_tech, remote, dry_run",
     [
     ("lmod", "module.lua", "singularity", False, False),
-    #("lmod", "module.lua", "podman", False, False),
+    ("lmod", "module.lua", "podman", False, False),
     ("tcl", "module.tcl", "singularity", False, False),
-    #("tcl", "module.tcl", "podman", False, False),
+    ("tcl", "module.tcl", "podman", False, False),
     ("lmod", "module.lua", "singularity", True, False),
-    #("lmod", "module.lua", "podman", True, False),
+    ("lmod", "module.lua", "podman", True, False),
     ("tcl", "module.tcl", "singularity", True, False),
-    #("tcl", "module.tcl", "podman", True, False),
+    ("tcl", "module.tcl", "podman", True, False),
     ("lmod", "module.lua", "singularity", False, True),
-    #("lmod", "module.lua", "podman", False, True),
+    ("lmod", "module.lua", "podman", False, True),
     ("tcl", "module.tcl", "singularity", False, True),
-    #("tcl", "module.tcl", "podman", False, True),
+    ("tcl", "module.tcl", "podman", False, True),
     ("lmod", "module.lua", "singularity", True, True),
-    #("lmod", "module.lua", "podman", True, True),
+    ("lmod", "module.lua", "podman", True, True),
     ("tcl", "module.tcl", "singularity", True, True),
-    #("tcl", "module.tcl", "podman", True, True),
+    ("tcl", "module.tcl", "podman", True, True),
     ],
 )
 
@@ -94,13 +94,13 @@ def test_upgrade_software_with_force(tmp_path, module_sys, module_file, containe
     "module_sys,module_file,container_tech,remote",
     [
         ("lmod", "module.lua", "singularity", False),
-        #("lmod", "module.lua", "podman", False),
+        ("lmod", "module.lua", "podman", False),
         ("tcl", "module.tcl", "singularity", False),
-        #("tcl", "module.tcl", "podman", False),
+        ("tcl", "module.tcl", "podman", False),
         ("lmod", "module.lua", "singularity", True),
-        #("lmod", "module.lua", "podman", True),
+        ("lmod", "module.lua", "podman", True),
         ("tcl", "module.tcl", "singularity", True),
-        #("tcl", "module.tcl", "podman", True),
+        ("tcl", "module.tcl", "podman", True),
     ],
 )
 
@@ -161,13 +161,13 @@ def test_upgrade_software_without_force(mock_confirm_action, tmp_path, module_sy
     "module_sys,module_file,container_tech,remote",
     [
         ("lmod", "module.lua", "singularity", False),
-        #("lmod", "module.lua", "podman", False),
+        ("lmod", "module.lua", "podman", False),
         ("tcl", "module.tcl", "singularity", False),
-        #("tcl", "module.tcl", "podman", False),
+        ("tcl", "module.tcl", "podman", False),
         ("lmod", "module.lua", "singularity", True),
-        #("lmod", "module.lua", "podman", True),
+        ("lmod", "module.lua", "podman", True),
         ("tcl", "module.tcl", "singularity", True),
-        #("tcl", "module.tcl", "podman", True),
+        ("tcl", "module.tcl", "podman", True),
     ],
 )   
 
@@ -206,13 +206,13 @@ def test_upgrade_with_latest_already_installed(tmp_path, module_sys, module_file
     "module_sys,module_file,container_tech,remote",
     [
         ("lmod", "module.lua", "singularity", False),
-        #("lmod", "module.lua", "podman", False),
+        ("lmod", "module.lua", "podman", False),
         ("tcl", "module.tcl", "singularity", False),
-        #("tcl", "module.tcl", "podman", False),
+        ("tcl", "module.tcl", "podman", False),
         ("lmod", "module.lua", "singularity", True),
-        #("lmod", "module.lua", "podman", True),
+        ("lmod", "module.lua", "podman", True),
         ("tcl", "module.tcl", "singularity", True),
-        #("tcl", "module.tcl", "podman", True),
+        ("tcl", "module.tcl", "podman", True),
     ],
 )
 
