@@ -15,8 +15,10 @@ from shpc.client.upgrade import  get_latest_version as glv
 def test_upgrade(tmp_path, module_sys, module_file, container_tech,remote):
     client = init_client(str(tmp_path), module_sys, container_tech,remote=remote)
 
+    print("Installing initial version...")
     client.install("quay.io/biocontainers/samtools:1.18--h50ea8bc_1")
 
+    print("Attempting upgrade...")
     client.upgrade("quay.io/biocontainers/samtools", dry_run=False, force=True)
 
     latest_version = "1.21--h50ea8bc_0" 
