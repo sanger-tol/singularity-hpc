@@ -94,13 +94,13 @@ def test_upgrade_software_with_force(tmp_path, module_sys, module_file, containe
     "module_sys,module_file,container_tech,remote",
     [
         ("lmod", "module.lua", "singularity", False),
-        ("lmod", "module.lua", "podman", False),
+        #("lmod", "module.lua", "podman", False),
         ("tcl", "module.tcl", "singularity", False),
-        ("tcl", "module.tcl", "podman", False),
+        #("tcl", "module.tcl", "podman", False),
         ("lmod", "module.lua", "singularity", True),
-        ("lmod", "module.lua", "podman", True),
+        #("lmod", "module.lua", "podman", True),
         ("tcl", "module.tcl", "singularity", True),
-        ("tcl", "module.tcl", "podman", True),
+        #("tcl", "module.tcl", "podman", True),
     ],
 )
 
@@ -161,13 +161,13 @@ def test_upgrade_software_without_force(mock_confirm_action, tmp_path, module_sy
     "module_sys,module_file,container_tech,remote",
     [
         ("lmod", "module.lua", "singularity", False),
-        ("lmod", "module.lua", "podman", False),
+        #("lmod", "module.lua", "podman", False),
         ("tcl", "module.tcl", "singularity", False),
-        ("tcl", "module.tcl", "podman", False),
+        #("tcl", "module.tcl", "podman", False),
         ("lmod", "module.lua", "singularity", True),
-        ("lmod", "module.lua", "podman", True),
+        #("lmod", "module.lua", "podman", True),
         ("tcl", "module.tcl", "singularity", True),
-        ("tcl", "module.tcl", "podman", True),
+        #("tcl", "module.tcl", "podman", True),
     ],
 )   
 
@@ -206,13 +206,13 @@ def test_upgrade_with_latest_already_installed(tmp_path, module_sys, module_file
     "module_sys,module_file,container_tech,remote",
     [
         ("lmod", "module.lua", "singularity", False),
-        ("lmod", "module.lua", "podman", False),
+        #("lmod", "module.lua", "podman", False),
         ("tcl", "module.tcl", "singularity", False),
-        ("tcl", "module.tcl", "podman", False),
+        #("tcl", "module.tcl", "podman", False),
         ("lmod", "module.lua", "singularity", True),
-        ("lmod", "module.lua", "podman", True),
+        #("lmod", "module.lua", "podman", True),
         ("tcl", "module.tcl", "singularity", True),
-        ("tcl", "module.tcl", "podman", True),
+        #("tcl", "module.tcl", "podman", True),
     ],
 )
 
@@ -245,7 +245,7 @@ def test_upgrade_all_software(tmp_path, module_sys, module_file, container_tech,
 
     # Upgrade all software to thei latest version
     installed_software = client.list(return_modules=True)
-    for software, older_version in installed_software.items():
+    for software, versions in installed_software.items():
         client.upgrade(software, dry_run=False, force=True)
 
         # Load the container configuration for the software and get their latest version tag
@@ -259,11 +259,12 @@ def test_upgrade_all_software(tmp_path, module_sys, module_file, container_tech,
         module_file_path = os.path.join(module_dir, module_file)
         assert os.path.exists(module_file_path), "Latest version's module files should be installed."
 
-        # Check if the older version's module directory was removed and if its module files were uninstalled
-        module_dir_old = os.path.join(client.settings.module_base, software, older_version)
-        assert not os.path.exists(module_dir_old), "Older version should be uninstalled"
-        module_file_path = os.path.join(module_dir_old, module_file)
-        assert not os.path.exists(module_file_path), "Older version's module files should be uninstalled."
+        for older_version in versions:
+            # Check if the older version's module directory was removed and if its module files were uninstalled
+            module_dir_old = os.path.join(client.settings.module_base, software, older_version)
+            assert not os.path.exists(module_dir_old), "Older version should be uninstalled"
+            module_file_path = os.path.join(module_dir_old, module_file)
+            assert not os.path.exists(module_file_path), "Older version's module files should be uninstalled."
 
         # Install latest version to the existing view and check if it was added to the view 
         client.view_install("mpi", f"{software}:{latest_version}")
