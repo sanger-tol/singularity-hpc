@@ -6,7 +6,9 @@ from shpc.client.upgrade import  get_latest_version as glv
 @pytest.mark.parametrize("module_sys, module_file, container_tech, remote",
     [
         ("lmod", "module.lua", "singularity", True),  
-        ("tcl", "module.tcl", "singularity", False),  
+        ("tcl", "module.tcl", "singularity", True),  
+        ("lmod", "module.lua", "singularity", False),  
+        ("tcl", "module.tcl", "singularity", False), 
     ],
 )
 
