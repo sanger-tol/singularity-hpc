@@ -32,7 +32,7 @@ def test_upgrade(tmp_path, module_sys, module_file, container_tech,remote):
     print(f"Latest version expected: {latest_version}")
 
     #installed_version = giv(name)
-    installed_version = client.list(pattern=name)
+    installed_version = client.list(pattern=name, return_modules=True)
     print(f"Installed version expected {installed_version}")
 
     print("Attempting upgrade...")
