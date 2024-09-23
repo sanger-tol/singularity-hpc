@@ -14,11 +14,11 @@ from unittest.mock import patch
     ],
 )
 
-@patch('shpc.client.upgrade.subprocess.run')
+#@patch('shpc.client.upgrade.subprocess.run')
 def test_upgrade(mock_subprocess,tmp_path, module_sys, module_file, container_tech,remote):
     client = init_client(str(tmp_path), module_sys, container_tech,remote=remote)
 
-    mock_subprocess.return_value.stdout = "quay.io/biocontainers/samtools:1.18--h50ea8bc_1"
+   # mock_subprocess.return_value.stdout = "quay.io/biocontainers/samtools:1.18--h50ea8bc_1"
 
     print("Installing initial version...")
     client.install("quay.io/biocontainers/samtools:1.18--h50ea8bc_1")
@@ -31,7 +31,8 @@ def test_upgrade(mock_subprocess,tmp_path, module_sys, module_file, container_te
     latest_version = glv(name, config)
     print(f"Latest version expected: {latest_version}")
 
-    installed_version = giv(name)
+    #installed_version = giv(name)
+    installed_version = client.list(pattern=name)
     print(f"Installed version expected {installed_version}")
 
     print("Attempting upgrade...")

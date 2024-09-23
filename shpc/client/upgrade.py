@@ -115,7 +115,7 @@ def upgrade(name, cli, args, dry_run=False, force=False):
     config = cli._load_container(name)
 
     #Store the installed versions and the latest version tag
-    installed_versions = get_installed_versions(name)
+    installed_versions = cli.list(pattern=name)
     latest_version_tag = get_latest_version(name, config)
 
     # Compare the latest version with the user's installed version
