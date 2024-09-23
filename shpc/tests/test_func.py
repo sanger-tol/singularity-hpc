@@ -2,6 +2,7 @@ import os
 import pytest
 from .helpers import init_client
 from shpc.client.upgrade import  get_latest_version as glv
+from shpc.client.upgrade import get_installed_versions as giv
 
 @pytest.mark.parametrize("module_sys, module_file, container_tech, remote",
     [
@@ -18,10 +19,19 @@ def test_upgrade(tmp_path, module_sys, module_file, container_tech,remote):
     print("Installing initial version...")
     client.install("quay.io/biocontainers/samtools:1.18--h50ea8bc_1")
 
+    # Load the container configuration for the software
+    name = client.add_namespace("quay.io/biocontainers/samtools")
+    config = client._load_container(name)
+
+    # Get the latest version tag from the software's configuration
+    latest_version = glv(name, config)
+    print(f"Latest version expected: {latest_version}")
+
+    installed_version = giv(name)
+    print(f"Installed version expected {installed_version}")
+
     print("Attempting upgrade...")
     client.upgrade("quay.io/biocontainers/samtools", dry_run=False, force=True)
-
-    latest_version = "1.21--h50ea8bc_0" 
 
     module_dir = os.path.join(client.settings.module_base, "quay.io/biocontainers/samtools", latest_version)
     print(f"Checking module directory: {module_dir}")
