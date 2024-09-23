@@ -3,6 +3,7 @@ import pytest
 from .helpers import init_client
 from shpc.client.upgrade import  get_latest_version as glv
 from shpc.client.upgrade import get_installed_versions as giv
+from unittest.mock import patch
 
 @pytest.mark.parametrize("module_sys, module_file, container_tech, remote",
     [
@@ -13,8 +14,11 @@ from shpc.client.upgrade import get_installed_versions as giv
     ],
 )
 
-def test_upgrade(tmp_path, module_sys, module_file, container_tech,remote):
+@patch('shpc.client.upgrade.subprocess.run')
+def test_upgrade(mock_subprocess,tmp_path, module_sys, module_file, container_tech,remote):
     client = init_client(str(tmp_path), module_sys, container_tech,remote=remote)
+
+    mock_subprocess.return_value.stdout = "quay.io/biocontainers/samtools:1.18--h50ea8bc_1"
 
     print("Installing initial version...")
     client.install("quay.io/biocontainers/samtools:1.18--h50ea8bc_1")
@@ -27,7 +31,7 @@ def test_upgrade(tmp_path, module_sys, module_file, container_tech,remote):
     latest_version = glv(name, config)
     print(f"Latest version expected: {latest_version}")
 
-    installed_version = client.list(names_only=True)
+    installed_version = giv(name)
     print(f"Installed version expected {installed_version}")
 
     print("Attempting upgrade...")
