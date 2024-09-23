@@ -13,7 +13,6 @@ from shpc.client.upgrade import  get_latest_version as glv
     ],
 )
 
-
 def test_upgrade(tmp_path, module_sys, module_file, container_tech,remote):
     client = init_client(str(tmp_path), module_sys, container_tech,remote=remote)
 
@@ -41,3 +40,38 @@ def test_upgrade(tmp_path, module_sys, module_file, container_tech,remote):
     module_file_path = os.path.join(module_dir, module_file)
     print(f"Checking if module file exists: {module_file}")
     assert os.path.exists(module_file_path), "Latest version's module files should be installed."
+
+
+@pytest.mark.parametrize("module_sys, module_file, container_tech, remote",
+    [
+        ("lmod", "module.lua", "singularity", True),  
+        ("tcl", "module.tcl", "singularity", True),  
+        ("lmod", "module.lua", "singularity", False),  
+        ("tcl", "module.tcl", "singularity", False), 
+    ],
+)
+
+def test_upgrade_with_latest_already_installed(tmp_path, module_sys, module_file, container_tech,remote):
+    client = init_client(str(tmp_path), module_sys, container_tech,remote=remote)
+
+    # Load the container configuration for the software
+    name = client.add_namespace("quay.io/biocontainers/samtools")
+    config = client._load_container(name)
+    latest_version = glv(name, config)
+
+    client.install(f"quay.io/biocontainers/samtools:{latest_version}")
+    client.install("quay.io/biocontainers/samtools:1.18--h50ea8bc_1")
+
+    module_dir = os.path.join(client.settings.module_base, "quay.io/biocontainers/samtools", latest_version)
+    assert os.path.exists(module_dir)
+    module_file_path = os.path.join(module_dir, module_file)
+    assert os.path.exists(module_file_path)
+
+    module_dir_mtime_before = os.path.getmtime(module_dir)
+
+    client.upgrade("quay.io/biocontainers/samtools", dry_run=False, force=True)
+
+    module_dir_mtime_after = os.path.getmtime(module_dir)
+
+    assert module_dir_mtime_after == module_dir_mtime_before, "Upgrade should not occur if latest is installed already."
+    

@@ -75,58 +75,47 @@ def test_upgrade_software(mock_confirm_action, tmp_path, module_sys, module_file
     # Upgrade the software to its latest version
     client.upgrade("quay.io/biocontainers/samtools", dry_run=dry_run, force=False)
 
-    # Load the container configuration for the software
+    # Load the container configuration for the software and get its latest version tag
     name = client.add_namespace("quay.io/biocontainers/samtools")
     config = client._load_container(name)
-
-    # Get the latest version tag from the software's configuration
     latest_version = glv(name, config)
-    print(f"Latest version expected: {latest_version}")
 
     # Verify if the latest version of the software was installed 
     if not dry_run:
-        # Verify the module's directory exists
+        # Verify the module's directory exists and module files were installed
         module_dir = os.path.join(client.settings.module_base, "quay.io/biocontainers/samtools", latest_version)
-        print(f"Checking module directory: {module_dir}")
-        assert os.path.exists(module_dir), "Latest version should be installed."
-        # Verify that its module files were installed
+        assert os.path.exists(module_dir), "Latest version directiory should exist."
         module_file_path = os.path.join(module_dir, module_file)
-        print(f"Checking if module file exists: {module_file}")
         assert os.path.exists(module_file_path), "Latest version's module files should be installed."
 
         # Simulate user's choice for uninstalling older versions and installing latest version to the views of the older versions
         mock_confirm_action.side_effect = [uninstall_prompt,view_prompt]
 
         if uninstall_prompt:
-            # Check the older version's module directory
+            # Check if the older version's module directory was removed and if its module files were uninstalled
             module_dir_old = os.path.join(client.settings.module_base, "quay.io/biocontainers/samtools", "1.18--h50ea8bc_1")
             assert not os.path.exists(module_dir_old), "Older version should be uninstalled"
-            # Verify that its module files were uninstalled
             module_file_path = os.path.join(module_dir_old, module_file)
             assert not os.path.exists(module_file_path), "Older version's module files should be uninstalled."
         else:
-            # Check the older version's module directory
+            # Check if the older version's module directory still exists and if its module files were not uninstalled
             module_dir_old = os.path.join(client.settings.module_base, "quay.io/biocontainers/samtools", "1.18--h50ea8bc_1")
             assert os.path.exists(module_dir_old), "old version should not be uninstalled"
-            # Verify that its module files were not uninstalled
             module_file_path = os.path.join(module_dir_old, module_file)
             assert os.path.exists(module_file_path), "Older version's module files should not be uninstalled."
 
         if view_prompt:
-            # Install latest version to views
+            # Install latest version to the existing view and check if it was added to the view 
             client.view_install("mpi", f"quay.io/biocontainers/samtools:{latest_version}")
-            # Check if the upgraded software was added to the existing view 
             assert client.views["mpi"].exists(module_dir), f"Upgraded software should be added to the view 'mpi'"
         else:
-            # Do not install the latest version to views
-            # Check if the upgraded software was added to the existing view 
+            # Do not install the latest version to the existing view and ensure it was added not added to the  view 
             assert not client.views["mpi"].exists(module_dir), f"Upgraded software should not added to the view 'mpi'"
     
     # Verify that the latest version of the software was not installed if dry-run is TRUE
     else:
         module_dir = os.path.join(client.settings.module_base, "quay.io/biocontainers/samtools", latest_version)
         assert not os.path.exists(module_dir), "Latest version should not be installed."
-        # Verify that its module files were not installed
         module_file_path = os.path.join(module_dir, module_file)
         assert not os.path.exists(module_file_path), "Latest version's module files should not be installed."
 
