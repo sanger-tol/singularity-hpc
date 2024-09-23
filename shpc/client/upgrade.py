@@ -115,7 +115,7 @@ def upgrade(name, cli, args, dry_run=False, force=False):
     config = cli._load_container(name)
 
     #Store the installed versions and the latest version tag
-    installed_versions = cli.list(pattern=name, return_modules=True)
+    installed_versions = get_installed_versions(cli, name)
     latest_version_tag = get_latest_version(name, config)
 
     # Compare the latest version with the user's installed version
@@ -150,23 +150,14 @@ def upgrade(name, cli, args, dry_run=False, force=False):
                     logger.info(f"Installed the latest version of {name} to view: {view_name}")
 
 
-def get_installed_versions(recipe):
+def get_installed_versions(cli, recipe):
         '''
         Retrieve the installed versions of the recipe from the user's software list
         '''
-        try:
-            result = subprocess.run(
-                ['shpc', 'list', recipe],
-                capture_output=True,
-                text=True,
-                check=True
-            )
-            output = result.stdout
-            return output
-        except subprocess.CalledProcessError as e:
-            logger.error(f"Failed to execute shpc list command: {e}")
-            return None
-
+        result = cli.list(pattern=recipe)
+        output = result.stdout
+        return output
+        
 
 def get_latest_version(name, config):
         '''
