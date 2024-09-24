@@ -342,14 +342,6 @@ def get_parser():
     )
 
     upgrade.add_argument(
-        "--dry-run",
-        "-d",
-        dest="dry_run",
-        help="do a dry run to view a list of the latest versions avaialble for the user's outdated software without upgrading them.",
-        action="store_true",
-    )
-
-    upgrade.add_argument(
         "--force",
         "-f",
         dest="force",
@@ -411,7 +403,7 @@ def get_parser():
         action="store_true",
     )
 
-    for command in update, sync:
+    for command in update, upgrade, sync:
         command.add_argument(
             "--dry-run",
             "-d",
