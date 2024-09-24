@@ -40,8 +40,8 @@ def main(args, parser, extra, subparser):
             logger.exit(f"You currently do not have {args.upgrade_recipe} installed.\nYou can install it with this command: shpc install {args.upgrade_recipe}", 0)
         
         # Does the user just want a dry-run of the specific software?
-        if args.dry_run:
-            upgrade_info = upgrade(args.upgrade_recipe, cli, args, dry_run=True) # This returns {software:latest_version} if latest is available and None otherwise
+        if args.dryrun:
+            upgrade_info = upgrade(args.upgrade_recipe, cli, args, dryrun=True) # This returns {software:latest_version} if latest is available and None otherwise
             if upgrade_info:
                 for version in upgrade_info.values():
                     logger.info(f"You do not have the latest version installed.\nLatest version avaiable is {version}")
@@ -50,7 +50,7 @@ def main(args, parser, extra, subparser):
 
         # Upgade the software
         else:
-            upgrade(args.upgrade_recipe, cli, args, dry_run=False, force=args.force)
+            upgrade(args.upgrade_recipe, cli, args, dryrun=False, force=args.force)
 
     # Upgrade all installed software
     elif args.upgrade_all:
@@ -58,10 +58,10 @@ def main(args, parser, extra, subparser):
         outdated_software = []
 
         # Does the user just want a dry-run of all software?
-        if args.dry_run:
+        if args.dryrun:
             print("Performing a dry-run on all your software...")
             for software in installed_software.keys():
-                upgrade_info = upgrade(software, cli, args, dry_run=True)
+                upgrade_info = upgrade(software, cli, args, dryrun=True)
                 if upgrade_info:
                     for software, version in upgrade_info.items():
                         logger.info(f"{software} is outdated. Latest version available is {version}")
@@ -84,7 +84,7 @@ def main(args, parser, extra, subparser):
         else:
             print("Checking your list to upgrade outdated software...")
             for software in installed_software.keys():
-                upgrade_info = upgrade(software, cli, args, dry_run=True)
+                upgrade_info = upgrade(software, cli, args, dryrun=True)
                 if upgrade_info:
                     outdated_software.append(software)
             # Get the number of the outdated software
@@ -95,7 +95,7 @@ def main(args, parser, extra, subparser):
             else:
                 logger.info(f"Found {num_outdated} outdated software")
                 for software in outdated_software:
-                    upgrade(software, cli, args, dry_run=False, force=args.force)
+                    upgrade(software, cli, args, dryrun=False, force=args.force)
                 logger.info("All your software are now up to date.")
 
     # Warn the user for not providing an argument
@@ -103,7 +103,7 @@ def main(args, parser, extra, subparser):
         subparser.error("Incomplete command. The following arguements are required: upgrade_recipe, --all, or -h for more details ")
 
 
-def upgrade(name, cli, args, dry_run=False, force=False):
+def upgrade(name, cli, args, dryrun=False, force=False):
     """
     Upgrade a software to its latest version. Or preview available upgrades from the user's software list
     """
@@ -119,11 +119,11 @@ def upgrade(name, cli, args, dry_run=False, force=False):
 
     # Compare the latest version with the user's installed version
     if any(latest_version_tag in versions for versions in installed_versions.values()):
-        if dry_run:
+        if dryrun:
             return None  # No upgrade available
         logger.info("You have the latest version of " + name + " installed already")
     else:
-        if dry_run:
+        if dryrun:
             return {name: latest_version_tag}  # Return the upgrade info
         print("Upgrading " + name + " to its latest version. Version " + latest_version_tag)
 
