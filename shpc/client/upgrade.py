@@ -81,7 +81,7 @@ def main(args, parser, extra, subparser):
             print("Checking your list to upgrade outdated software...")
             for software in installed_software.keys():
                 # Attempt upgrade on each software
-                upgrade_info = upgrade(software, cli, args, dry_run=False, force=args.force)
+                upgrade_info = upgrade(software, cli, args, dryrun=False, force=args.force)
                 # Count actual upgrades
                 if upgrade_info:
                     num_outdated += 1
