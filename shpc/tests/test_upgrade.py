@@ -78,8 +78,7 @@ def test_upgrade_software_with_force(tmp_path, module_sys, module_file, containe
         module_file_path = os.path.join(module_dir_old, module_file)
         assert not os.path.exists(module_file_path), "Older version's module files should be uninstalled."
 
-        # Install latest version to the existing view and check if it was added to the view 
-        client.view_install("mpi", f"quay.io/biocontainers/samtools:{latest_version}")
+        # Ensure the latest version was added to the view 
         assert client.views["mpi"].exists(module_dir), f"Upgraded software should be added to the view 'mpi'"
     
     # Verify that the latest version of the software was not installed if dry-run is TRUE
@@ -153,7 +152,7 @@ def test_upgrade_software_without_force(mock_confirm_action, tmp_path, module_sy
     module_file_path = os.path.join(module_dir_old, module_file)
     assert os.path.exists(module_file_path), "Older version's module files should not be uninstalled."
     
-    # Do not install the latest version to the existing view and ensure it was added not added to the  view 
+    # Ensure the latest version was not added to the view 
     assert not client.views["mpi"].exists(module_dir), f"Upgraded software should not added to the view 'mpi'"
 
 
@@ -266,8 +265,7 @@ def test_upgrade_all_software(tmp_path, module_sys, module_file, container_tech,
             module_file_path = os.path.join(module_dir_old, module_file)
             assert not os.path.exists(module_file_path), "Older version's module files should be uninstalled."
 
-        # Install latest version to the existing view and check if it was added to the view 
-        client.view_install("mpi", f"{software}:{latest_version}")
+        # Ensure the latest versions were added to the view 
         assert client.views["mpi"].exists(module_dir), f"Upgraded software should be added to the view 'mpi'"
 
     
