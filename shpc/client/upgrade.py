@@ -45,10 +45,9 @@ def main(args, parser, extra, subparser):
         
         # Does the user just want a dry-run of the specific software?
         if args.dryrun:
-            upgrade_info = upgrade(args.upgrade_recipe, cli, args, dryrun=True) # This returns {software:latest_version} if latest is available and None otherwise
-            if upgrade_info:
-                for version in upgrade_info.values():
-                    logger.info(f"You do not have the latest version installed.\nLatest version avaiable is {version}")
+            version_info = upgrade(args.upgrade_recipe, cli, args, dryrun=True) # This returns the latest version if its available, else returns None 
+            if version_info:
+                logger.info(f"You do not have the latest version installed.\nLatest version avaiable is {version_info}")
             else:
                 logger.info(f"You have the latest version of {args.upgrade_recipe} installed.")
 
@@ -58,51 +57,38 @@ def main(args, parser, extra, subparser):
 
     # Upgrade all installed software
     elif args.upgrade_all:
-        # Store a list of all outdated software
-        outdated_software = []
+        # Store the number of all outdated software
+        num_outdated = 0
 
         # Does the user just want a dry-run of all software?
         if args.dryrun:
             print("Performing a dry-run on all your software...")
             for software in installed_software.keys():
-                upgrade_info = upgrade(software, cli, args, dryrun=True)
-                if upgrade_info:
-                    for software, version in upgrade_info.items():
-                        logger.info(f"{software} is outdated. Latest version available is {version}")
-                    outdated_software.append(software)
+                version_info = upgrade(software, cli, args, dryrun=True)
+                if version_info:
+                    logger.info(f"{software} is outdated. Latest version available is {version_info}")
+                    num_outdated += 1
                 else:
                     logger.info(f"{software} is up to date.")
             # Provide a report on the dry-run
-            num_outdated = len(outdated_software)
             if num_outdated == 0:
                 logger.info("All your software are currently up to date.")
             else:
                 logger.info(f"You have a total of {num_outdated} outdated software.")
-                '''
-                msg = "Do you want a simple list of only your outdated software?"
-                if utils.confirm_action(msg, force=False):
-                    logger.info("These are your outdated software:")
-                    for software in outdated_software:
-                        print(software)
-                '''
 
         # Upgrade all software
         else:
             print("Checking your list to upgrade outdated software...")
             for software in installed_software.keys():
-                upgrade_info = upgrade(software, cli, args, dryrun=True)
+                # Attempt upgrade on each software
+                upgrade_info = upgrade(software, cli, args, dry_run=False, force=args.force)
+                # Count actual upgrades
                 if upgrade_info:
-                    outdated_software.append(software)
-            # Get the number of the outdated software
-            num_outdated = len(outdated_software)
-            # Perform upgrade on each outdated software
+                    num_outdated += 1
             if num_outdated == 0:
                 logger.info("No upgrade needed. All your software are up to date.")
             else:
-                logger.info(f"Found {num_outdated} outdated software")
-                for software in outdated_software:
-                    upgrade(software, cli, args, dryrun=False, force=args.force)
-                logger.info("All your software are now up to date.")
+                logger.info(f"Updated {num_outdated} outdated software from your list\nAll your software are now up to date.")                    
 
 
 def upgrade(name, cli, args, dryrun=False, force=False):
@@ -124,15 +110,18 @@ def upgrade(name, cli, args, dryrun=False, force=False):
         if dryrun:
             return None  # No upgrade available
         logger.info("You have the latest version of " + name + " installed already")
+        return False # No upgrade occured
+    
     else:
         if dryrun:
-            return {name: latest_version_tag}  # Return the upgrade info
+            return latest_version_tag  # Return the latest version for upgrade information
         print("Upgrading " + name + " to its latest version. Version " + latest_version_tag)
 
         # Get the list of views the software was in
         views_with_module = set()
+        view_dir = cli.new_module(name).module_dir
         for view_name, entry in cli.views.items():
-            if entry.exists(cli.new_module(name).module_dir):
+            if entry.exists(view_dir):
                 views_with_module.add(view_name)
 
         # Ask if the user wants to unintall old versions
@@ -149,6 +138,8 @@ def upgrade(name, cli, args, dryrun=False, force=False):
                 for view_name in views_with_module:
                     cli.view_install(view_name, name)
                     logger.info(f"Installed the latest version of {name} to view: {view_name}")
+        
+        return True # Upgrade occured
         
 
 def get_latest_version(name, config):
