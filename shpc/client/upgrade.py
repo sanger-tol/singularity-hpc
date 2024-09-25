@@ -14,6 +14,10 @@ def main(args, parser, extra, subparser):
     # Update config settings on the fly
     cli.settings.update_params(args.config_params)
 
+    # Check if user entered an incomplete command
+    if not args.upgrade_recipe and not args.upgrade_all:
+        subparser.error("Incomplete command. The following arguments are required: upgrade_recipe, --all, or -h for more details")
+
     # Get the list of installed software
     installed_software = cli.list(return_modules=True)
 
@@ -97,10 +101,6 @@ def main(args, parser, extra, subparser):
                 for software in outdated_software:
                     upgrade(software, cli, args, dryrun=False, force=args.force)
                 logger.info("All your software are now up to date.")
-
-    # Warn the user for not providing an argument
-    else:
-        subparser.error("Incomplete command. The following arguements are required: upgrade_recipe, --all, or -h for more details ")
 
 
 def upgrade(name, cli, args, dryrun=False, force=False):
