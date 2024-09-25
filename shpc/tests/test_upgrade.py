@@ -10,7 +10,7 @@ import shpc.main.modules.views as views
 from shpc.client.upgrade import  get_latest_version as glv
 
 @pytest.mark.parametrize(
-    "module_sys, module_file, container_tech, remote, dry_run",
+    "module_sys, module_file, container_tech, remote, dryrun",
     [
     ("lmod", "module.lua", "singularity", False, False),
     ("lmod", "module.lua", "podman", False, False),
@@ -31,7 +31,7 @@ from shpc.client.upgrade import  get_latest_version as glv
     ],
 )
 
-def test_upgrade_software_with_force(tmp_path, module_sys, module_file, container_tech, remote, dry_run):
+def test_upgrade_software_with_force(tmp_path, module_sys, module_file, container_tech, remote, dryrun):
     """
     Test upgrading a software where uninstalling older versions and installing latest version to view is also done.
     """
@@ -57,7 +57,7 @@ def test_upgrade_software_with_force(tmp_path, module_sys, module_file, containe
     client.view_install("mpi", "quay.io/biocontainers/samtools:1.18--h50ea8bc_1")
 
     # Upgrade the software to its latest version
-    client.upgrade("quay.io/biocontainers/samtools", dry_run=dry_run, force=True)
+    client.upgrade("quay.io/biocontainers/samtools", dryrun=dryrun, force=True)
 
     # Load the container configuration for the software and get its latest version tag
     name = client.add_namespace("quay.io/biocontainers/samtools")
@@ -65,7 +65,7 @@ def test_upgrade_software_with_force(tmp_path, module_sys, module_file, containe
     latest_version = glv(name, config)
 
     # Verify if the latest version of the software was installed 
-    if not dry_run:
+    if not dryrun:
         # Verify the module's directory exists and module files were installed
         module_dir = os.path.join(client.settings.module_base, "quay.io/biocontainers/samtools", latest_version)
         assert os.path.exists(module_dir), "Latest version directiory should exist."
@@ -134,7 +134,7 @@ def test_upgrade_software_without_force(mock_confirm_action, tmp_path, module_sy
     mock_confirm_action.return_value = False
 
     # Upgrade the software to its latest version
-    client.upgrade("quay.io/biocontainers/samtools", dry_run=False, force=False)
+    client.upgrade("quay.io/biocontainers/samtools", dryrun=False, force=False)
 
     # Load the container configuration for the software and get its latest version tag
     name = client.add_namespace("quay.io/biocontainers/samtools")
@@ -193,7 +193,7 @@ def test_upgrade_with_latest_already_installed(tmp_path, module_sys, module_file
     module_dir_mtime_before = os.path.getmtime(module_dir)
 
     # Perform upgrade
-    client.upgrade("quay.io/biocontainers/samtools", dry_run=False, force=True)
+    client.upgrade("quay.io/biocontainers/samtools", dryrun=False, force=True)
 
     # Capture the time of the directory after upgrade was done
     module_dir_mtime_after = os.path.getmtime(module_dir)
@@ -246,7 +246,7 @@ def test_upgrade_all_software(tmp_path, module_sys, module_file, container_tech,
     # Upgrade all software to thei latest version
     installed_software = client.list(return_modules=True)
     for software, versions in installed_software.items():
-        client.upgrade(software, dry_run=False, force=True)
+        client.upgrade(software, dryrun=False, force=True)
 
         # Load the container configuration for the software and get their latest version tag
         name = client.add_namespace(software)
