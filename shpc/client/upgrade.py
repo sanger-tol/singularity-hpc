@@ -78,11 +78,13 @@ def main(args, parser, extra, subparser):
                 logger.info("All your software are currently up to date.")
             else:
                 logger.info(f"You have a total of {num_outdated} outdated software.")
+                '''
                 msg = "Do you want a simple list of only your outdated software?"
                 if utils.confirm_action(msg, force=False):
                     logger.info("These are your outdated software:")
                     for software in outdated_software:
                         print(software)
+                '''
 
         # Upgrade all software
         else:
