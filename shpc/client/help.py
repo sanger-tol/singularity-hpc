@@ -252,7 +252,7 @@ upgrade_description = """Upgrade software to the latest version.
   # Upgrade all software
   $ shpc upgrade --all
       OR
-  $ shpc upgrade -a    
+  $ shpc upgrade -a
 
   # Valid arguement combinations:
   # Perform dry-run on a software to check if the latest is installed or not without upgrading it.
@@ -261,16 +261,16 @@ upgrade_description = """Upgrade software to the latest version.
   $ shpc upgrade quay.io/biocontainers/samtools -d
 
   # Perform dry-run to show version details of all installed software, to check if the latest version is installed or not without upgrading them.
-  $ shpc upgrade --all --dry-run 
+  $ shpc upgrade --all --dry-run
       OR
   $ shpc upgrade -a -d
 
   # Invalid arguement combinations:
-  $ shpc upgrade quay.io/biocontainers/samtools --all 
+  $ shpc upgrade quay.io/biocontainers/samtools --all
       OR
   $ shpc upgrade quay.io/biocontainers/samtools -a
 
-  $ shpc upgrade quay.io/biocontainers/samtools --all --dry-run 
+  $ shpc upgrade quay.io/biocontainers/samtools --all --dry-run
       OR
   $ shpc upgrade quay.io/biocontainers/samtools -a -d
 

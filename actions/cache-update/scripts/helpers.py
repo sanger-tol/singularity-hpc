@@ -17,9 +17,9 @@ def add_container(cli, container, maintainer, entry_name, aliases, url=None):
     # Now read in as yaml (without comments)
     result = shpc.utils.read_yaml(container_yaml)
     result["maintainer"] = maintainer
-    result[
-        "description"
-    ] = f"singularity registry hpc automated addition for {entry_name}"
+    result["description"] = (
+        f"singularity registry hpc automated addition for {entry_name}"
+    )
 
     if not url:
         url = "https://singularity-hpc.readthedocs.io/"
