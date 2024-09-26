@@ -79,7 +79,7 @@ def test_upgrade_software_with_force(tmp_path, module_sys, module_file, containe
         assert not os.path.exists(module_file_path), "Older version's module files should be uninstalled."
 
         # Ensure the latest version was added to the view 
-        assert client.views["mpi"].exists(module_dir), f"Upgraded software should be added to the view 'mpi'"
+        assert client.views["mpi"].exists(module_dir), "Upgraded software should be added to the view 'mpi'"
     
     # Verify that the latest version of the software was not installed if dry-run is TRUE
     else:
@@ -153,7 +153,7 @@ def test_upgrade_software_without_force(mock_confirm_action, tmp_path, module_sy
     assert os.path.exists(module_file_path), "Older version's module files should not be uninstalled."
     
     # Ensure the latest version was not added to the view 
-    assert not client.views["mpi"].exists(module_dir), f"Upgraded software should not added to the view 'mpi'"
+    assert not client.views["mpi"].exists(module_dir), "Upgraded software should not added to the view 'mpi'"
 
 
 @pytest.mark.parametrize(
@@ -266,7 +266,7 @@ def test_upgrade_all_software(tmp_path, module_sys, module_file, container_tech,
             assert not os.path.exists(module_file_path), "Older version's module files should be uninstalled."
 
         # Ensure the latest versions were added to the view 
-        assert client.views["mpi"].exists(module_dir), f"Upgraded software should be added to the view 'mpi'"
+        assert client.views["mpi"].exists(module_dir), "Upgraded software should be added to the view 'mpi'"
 
     
    
