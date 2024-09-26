@@ -1,5 +1,6 @@
 [tool.black]
-exclude = "^env/"
+profile = "black"
+exclude = ["^env/"]
 
 [tool.isort]
 profile = "black" # needed for black/isort compatibility
