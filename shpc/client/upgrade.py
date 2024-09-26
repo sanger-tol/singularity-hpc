@@ -107,11 +107,10 @@ def upgrade(name, cli, args, dryrun=False, force=False):
 
     # Compare the latest version with the user's installed version
     if any(latest_version_tag in versions for versions in installed_versions.values()):
-        if dryrun:
-            return None  # No upgrade available
-        logger.info("You have the latest version of " + name + " installed already")
-        return False # No upgrade occured
-    
+        if not dryrun:
+            logger.info("You have the latest version of " + name + " installed already")
+        return None # No upgrade necessary
+
     else:
         if dryrun:
             return latest_version_tag  # Return the latest version for upgrade information
@@ -139,7 +138,7 @@ def upgrade(name, cli, args, dryrun=False, force=False):
                     cli.view_install(view_name, name)
                     logger.info(f"Installed the latest version of {name} to view: {view_name}")
         
-        return True # Upgrade occured
+        return latest_version_tag # Upgrade occured
         
 
 def get_latest_version(name, config):

@@ -66,7 +66,7 @@ class Client:
         """
         Upgrade an outdated software
         """
-        from shpc.client.upgrade import upgrade as upgrade
+        from shpc.client.upgrade import upgrade
         cli = self  
         args = {}  
         upgrade(name, cli, args, dryrun=dryrun, force=force)
