@@ -417,7 +417,7 @@ def test_remove(tmp_path):
     "module_sys,module_file,container_tech,remote,update_containers",
     [
         ("lmod", "module.lua", "singularity", False, False),
-        # ("lmod", "module.lua", "podman", False, False), # Having an issue
+        ("lmod", "module.lua", "podman", False, False),
         ("tcl", "module.tcl", "singularity", False, False),
         ("tcl", "module.tcl", "podman", False, False),
         ("lmod", "module.lua", "singularity", True, False),
