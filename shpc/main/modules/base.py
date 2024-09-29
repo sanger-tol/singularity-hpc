@@ -110,7 +110,7 @@ class ModuleBase(BaseClient):
                 return
 
         # Podman needs image deletion
-        if not keep_container: #For reinstall
+        if not keep_container:  # For reinstall
             self.container.delete(module.name)
 
         if module.container_dir != module.module_dir:
@@ -118,19 +118,19 @@ class ModuleBase(BaseClient):
                 self._uninstall(
                     module.container_dir,
                     self.container_base,
-                    "$container_base/%s" % module.name
+                    "$container_base/%s" % module.name,
                 )
 
             self._uninstall(
                 module.module_dir,
                 self.settings.module_base,
-                "$module_base/%s" % module.name
+                "$module_base/%s" % module.name,
             )
         else:
             self._uninstall(
                 module.module_dir,
                 self.settings.module_base,
-                "$module_base/%s" % module.name
+                "$module_base/%s" % module.name,
             )
 
         # If we have a wrapper
@@ -138,7 +138,7 @@ class ModuleBase(BaseClient):
             self._uninstall(
                 module.wrapper_dir,
                 self.settings.wrapper_base,
-                "$wrapper_base/%s" % module.name
+                "$wrapper_base/%s" % module.name,
             )
 
         # If uninstalling the entire module, clean up symbolic links in all views

@@ -61,14 +61,15 @@ class Client:
         Install must be implemented by the subclass (e.g., lmod)
         """
         raise NotImplementedError
-    
+
     def reinstall(self, name, update_containers=False):
         """
         Reinstall an installed software
         """
         from shpc.client.reinstall import reinstall
-        cli = self  
-        args = {}  
+
+        cli = self
+        args = {}
         reinstall(name, cli, args, update_containers=update_containers)
 
     def uninstall(self, name, tag=None):
