@@ -138,7 +138,7 @@ def get_parser():
                 "--update-containers",
                 "-u",
                 dest="update_containers",
-                help="do not keep the container image file, when reinstalling",
+                help="Also reinstall the containers (by default, containers are preserved)",
                 default=False,
                 action="store_true"
     )

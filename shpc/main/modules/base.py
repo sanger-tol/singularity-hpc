@@ -107,7 +107,7 @@ class ModuleBase(BaseClient):
                     % "\n  ".join(views_with_module)
                 )
             if not utils.confirm_action(msg, force):
-                return 
+                return
 
         # Podman needs image deletion
         if not keep_container: #For reinstall
@@ -151,8 +151,6 @@ class ModuleBase(BaseClient):
         # update the default version file, if other versions still present
         if os.path.exists(module_dir):
             self.versionfile.write(module_dir)
-
-        return 
 
     def _uninstall(self, path, base_path, name):
         """

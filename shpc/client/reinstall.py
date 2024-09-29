@@ -1,5 +1,5 @@
-__author__ = "Ausbeth Aguguo"
-__copyright__ = "Copyright 2021-2024, Ausbeth Aguguo"
+__author__ = "Vanessa Sochat"
+__copyright__ = "Copyright 2021-2024, Vanessa Sochat"
 __license__ = "MPL 2.0"
 
 import shpc.utils
@@ -20,6 +20,11 @@ def main(args, parser, extra, subparser):
     # Update config settings on the fly
     cli.settings.update_params(args.config_params)
 
+    # Check if user entered an incomplete command
+    if not args.reinstall_recipe and not args.all:
+            subparser.error("You must specify a recipe to reinstall or use --all to reinstall all installed software.")
+    
+    # Reinstall all software
     if args.all:
         # Check if the user typed an invalid argument combination
         if args.reinstall_recipe:
@@ -36,11 +41,8 @@ def main(args, parser, extra, subparser):
             reinstall(software, cli, args, update_containers=args.update_containers)
         logger.info("All software reinstalled.")
 
-    else:
-        # Reinstall a specific software
-        if not args.reinstall_recipe:
-            subparser.error("You must specify a recipe to reinstall or use --all to reinstall all installed software.")
-
+    # Reinstall a specific software
+    else:     
         # Add namespace
         name = cli.add_namespace(args.reinstall_recipe)
     
@@ -85,11 +87,11 @@ def reinstall_version(name, cli, args, update_containers):
     """
     Sub-function to handle the actual reinstallation
     """
-
     # Get the list of views the software was in
     views_with_module = set()
+    views_dir = cli.new_module(name).module_dir
     for view_name, entry in cli.views.items():
-        if entry.exists(cli.new_module(name).module_dir):
+        if entry.exists(views_dir):
             views_with_module.add(view_name)
 
     # Uninstallation process. By default, uninstall without prompting the user and keep the container except the user wants a complete reinstall
