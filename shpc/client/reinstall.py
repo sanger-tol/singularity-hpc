@@ -35,7 +35,7 @@ def main(args, parser, extra, subparser):
                 "You cannot specify a recipe with --all. Use shpc reinstall --all to reinstall all installed software."
             )
 
-        # Check if the has any software installed
+        # Check if the user has any software installed
         installed_software = cli.list(return_modules=True)
         if not installed_software:
             logger.exit("You currently don't have any installed software to reinstall.")
