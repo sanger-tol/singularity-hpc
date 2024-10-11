@@ -72,6 +72,16 @@ class Client:
         args = {}
         upgrade(name, cli, args, dryrun=dryrun, force=force)
 
+    def reinstall(self, name, update_containers=False):
+        """
+        Reinstall an installed software
+        """
+        from shpc.client.reinstall import reinstall
+
+        cli = self
+        args = {}
+        reinstall(name, cli, args, update_containers=update_containers)
+
     def uninstall(self, name, tag=None):
         """
         Uninstall must also implemented by the subclass (e.g., lmod)
