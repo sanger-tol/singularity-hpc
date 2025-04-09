@@ -152,6 +152,17 @@
             "avatar_url": [
                 "https://avatars.githubusercontent.com/u/2136256?v=4"
             ]
+        },
+        {
+            "login": "Ausbeth",
+            "name": "Ausbeth Chiemeka",
+            "contributions": [
+                "code"
+            ],
+            "profile": "https://ausbeth.github.io/",
+            "avatar_url": [
+                null
+            ]
         }
     ],
     "contributorsPerLine": 7
